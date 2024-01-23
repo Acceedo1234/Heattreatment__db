@@ -1,0 +1,4 @@
+../Core/Src/ESP8266/esp8266_rx.c:22:6:ESPRXDataSeg	56	static
+../Core/Src/ESP8266/esp8266_rx.c:108:6:ReadOnlineData	24	static
+../Core/Src/ESP8266/esp8266_rx.c:855:15:DecToASCIIFun	0	static
+../Core/Src/ESP8266/esp8266_rx.c:121:6:ESPRxDecoder	16	static

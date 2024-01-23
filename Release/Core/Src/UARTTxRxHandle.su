@@ -1,0 +1,1 @@
+../Core/Src/UARTTxRxHandle.c:23:6:HAL_UART_RxCpltCallback	16	static

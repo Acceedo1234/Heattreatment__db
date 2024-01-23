@@ -1,0 +1,14 @@
+../Core/Src/GLCD_clib.c:28:6:delay_us	24	static
+../Core/Src/GLCD_clib.c:42:15:AssignPinstate	24	static
+../Core/Src/GLCD_clib.c:57:6:m_IOWriteGLCDData	16	static
+../Core/Src/GLCD_clib.c:71:6:ctrloff	8	static
+../Core/Src/GLCD_clib.c:80:6:displayon	8	static
+../Core/Src/GLCD_clib.c:93:6:displayoff	8	static
+../Core/Src/GLCD_clib.c:106:6:setcolumn	16	static
+../Core/Src/GLCD_clib.c:137:6:setpage	16	static
+../Core/Src/GLCD_clib.c:152:6:setstartline	16	static
+../Core/Src/GLCD_clib.c:166:6:lcddata	24	static
+../Core/Src/GLCD_clib.c:203:6:lcdputs1	24	static
+../Core/Src/GLCD_clib.c:218:6:lcdputs2	24	static
+../Core/Src/GLCD_clib.c:233:6:picture	24	static
+../Core/Src/GLCD_clib.c:246:6:clrlcd	16	static

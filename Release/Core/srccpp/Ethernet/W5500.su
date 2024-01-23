@@ -1,0 +1,4 @@
+../Core/srccpp/Ethernet/W5500.cpp:24:1:W5500Class::~W5500Class()	0	static
+../Core/srccpp/Ethernet/W5500.cpp:24:1:virtual W5500Class::~W5500Class()	8	static
+../Core/srccpp/Ethernet/W5500.cpp:19:1:W5500Class::W5500Class()	0	static
+../Core/srccpp/Ethernet/W5500.cpp:26:1:cpp)	0	static

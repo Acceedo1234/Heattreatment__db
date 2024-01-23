@@ -1,0 +1,6 @@
+../Core/srccpp/Ethernet/W5500.cpp:19:1:W5500Class::W5500Class()	16	static
+../Core/srccpp/Ethernet/W5500.cpp:24:1:W5500Class::~W5500Class()	16	static
+../Core/srccpp/Ethernet/W5500.cpp:24:1:virtual W5500Class::~W5500Class()	16	static
+../Core/srccpp/Ethernet/W5500.cpp:26:1:void __static_initialization_and_destruction_0(int, int)	16	static
+../Core/srccpp/Ethernet/W5500.cpp:26:1:cpp)	8	static
+../Core/srccpp/Ethernet/W5500.cpp:26:1:cpp)	8	static

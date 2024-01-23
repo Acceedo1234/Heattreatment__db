@@ -1,0 +1,8 @@
+../Core/srccpp/LpdcLogic/LpdcLogic.cpp:33:1:LpdcLogic::~LpdcLogic()	0	static
+../Core/srccpp/LpdcLogic/LpdcLogic.cpp:33:1:virtual LpdcLogic::~LpdcLogic()	8	static
+../Core/srccpp/LpdcLogic/LpdcLogic.cpp:28:1:LpdcLogic::LpdcLogic()	0	static
+../Core/srccpp/LpdcLogic/LpdcLogic.cpp:45:6:void LpdcLogic::shiftChange()	0	static
+../Core/srccpp/LpdcLogic/LpdcLogic.cpp:58:6:void LpdcLogic::productChange()	0	static
+../Core/srccpp/LpdcLogic/LpdcLogic.cpp:75:6:void LpdcLogic::production()	24	static
+../Core/srccpp/LpdcLogic/LpdcLogic.cpp:129:6:void LpdcLogic::manualRejection()	8	static
+../Core/srccpp/LpdcLogic/LpdcLogic.cpp:37:6:void LpdcLogic::run()	8	static

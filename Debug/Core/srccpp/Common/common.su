@@ -1,0 +1,3 @@
+../Core/srccpp/Common/common.cpp:10:1:common::common()	16	static
+../Core/srccpp/Common/common.cpp:15:1:common::~common()	16	static
+../Core/srccpp/Common/common.cpp:15:1:virtual common::~common()	16	static

@@ -1,0 +1,5 @@
+../Core/srccpp/Shift/SHIFT.cpp:31:1:SHIFT::~SHIFT()	0	static
+../Core/srccpp/Shift/SHIFT.cpp:31:1:virtual SHIFT::~SHIFT()	8	static
+../Core/srccpp/Shift/SHIFT.cpp:26:1:SHIFT::SHIFT()	0	static
+../Core/srccpp/Shift/SHIFT.cpp:35:6:void SHIFT::shiftCalculation()	24	static
+../Core/srccpp/Shift/SHIFT.cpp:85:6:void SHIFT::run()	0	static

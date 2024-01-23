@@ -1,0 +1,5 @@
+../Core/srccpp/OfflineStorage/OfflineStorage.cpp:46:1:OfflineStorage::~OfflineStorage()	0	static
+../Core/srccpp/OfflineStorage/OfflineStorage.cpp:46:1:virtual OfflineStorage::~OfflineStorage()	8	static
+../Core/srccpp/OfflineStorage/OfflineStorage.cpp:41:1:OfflineStorage::OfflineStorage()	0	static
+../Core/srccpp/OfflineStorage/OfflineStorage.cpp:50:6:void OfflineStorage::run()	96	static
+../Core/srccpp/OfflineStorage/OfflineStorage.cpp:136:6:void OfflineStorage::ReadOfflinedataInit()	8	static
