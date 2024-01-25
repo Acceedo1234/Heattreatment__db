@@ -91,6 +91,8 @@ uint8_t check_w,check_r;
 uint8_t testvariable[8]={1,2,3,4,5,6,7,8};
 uint8_t testvariable1[8];
 
+extern uint8_t u8rxbuf[16];
+
 /* USER CODE END 0 */
 
 /**
@@ -156,6 +158,7 @@ int main(void)
   W25qxx_Init();
   //rtc_set_time(13,14,30);
   //rtc_set_date(2,20,2,23);
+  HAL_UART_Receive_IT(&huart1,u8rxbuf,1);
   HAL_UART_Receive_IT(&hlpuart1,rxTempBuff,1);
   while (1)
   {

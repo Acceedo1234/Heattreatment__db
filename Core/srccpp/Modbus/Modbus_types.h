@@ -15,6 +15,6 @@ struct{
 }read_rxint_set;
 
 
-uint8_t u8rxbuf[255];
+uint8_t u8rxbuf[16];
 
 #endif /* SRCCPP_MODBUS_MODBUS_TYPES_H_ */
