@@ -121,18 +121,17 @@ void OfflineStorage::m_readCountinc(){
 	seq2_count_inc = (m_readFlashBuf[3]<<8 | m_readFlashBuf[2]);
 	seq1_count_inc_K1 = seq1_count_inc;
 	seq2_count_inc_K1 = seq2_count_inc;
-	SEQMONITOR_K1 = SEQMONITOR;
 }
 
 void OfflineStorage::m_readSeqMonitor(){
 	W25qxx_ReadSector(m_readFlashBuf,0,0,1);
-	SEQMONITOR = m_readFlashBuf[0];
+	SEQMONITOR = 26;//m_readFlashBuf[0];
 	SEQMONITOR_K1 = SEQMONITOR;
 }
 
 void OfflineStorage::m_readHeattreatmentData(){
 	W25qxx_ReadSector(m_readFlashBuf,1,0,10);
-	ProcessId_Value = 2;//(m_readFlashBuf[1]<<8 | m_readFlashBuf[0]);
+	ProcessId_Value = 3;//(m_readFlashBuf[1]<<8 | m_readFlashBuf[0]);
 	Seq1temperature = (m_readFlashBuf[3]<<8 | m_readFlashBuf[2]);
 	Seq2temperature = (m_readFlashBuf[5]<<8 | m_readFlashBuf[4]);
 	Seq1durationHr = m_readFlashBuf[6];

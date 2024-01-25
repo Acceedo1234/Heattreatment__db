@@ -91,8 +91,8 @@ all: main-build
 main-build: heattreatment.elf secondary-outputs
 
 # Tool invocations
-heattreatment.elf heattreatment.map: $(OBJS) $(USER_OBJS) D:\Naveen_wrkspace\Heattreatment\USM_stm32_migration\heattreatment_USM2_stm_09_10_23_B1\STM32L433RCTX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-g++ -o "heattreatment.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"D:\Naveen_wrkspace\Heattreatment\USM_stm32_migration\heattreatment_USM2_stm_09_10_23_B1\STM32L433RCTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="heattreatment.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -lstdc++ -lsupc++ -Wl,--end-group
+heattreatment.elf heattreatment.map: $(OBJS) $(USER_OBJS) D:\SourceTree\Heattreatment\STM32L433RCTX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-g++ -o "heattreatment.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"D:\SourceTree\Heattreatment\STM32L433RCTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="heattreatment.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -lstdc++ -lsupc++ -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 

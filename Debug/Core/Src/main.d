@@ -31,9 +31,9 @@ Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/main.h \
  ../Drivers/STM32L4xx_HAL_Driver/Inc/stm32l4xx_hal_tim_ex.h \
  ../Drivers/STM32L4xx_HAL_Driver/Inc/stm32l4xx_hal_uart.h \
  ../Drivers/STM32L4xx_HAL_Driver/Inc/stm32l4xx_hal_uart_ex.h \
- D:/Naveen_wrkspace/Heattreatment/USM_stm32_migration/heattreatment_USM2_stm_09_10_23_B1/Core/Src/W5500_C/w5500_spi.h \
- D:/Naveen_wrkspace/Heattreatment/USM_stm32_migration/heattreatment_USM2_stm_09_10_23_B1/Core/Src/W25Q64/w25qxx.h \
- D:/Naveen_wrkspace/Heattreatment/USM_stm32_migration/heattreatment_USM2_stm_09_10_23_B1/Core/Src/RTC/ds1307.h
+ D:/SourceTree/Heattreatment/Core/Src/W5500_C/w5500_spi.h \
+ D:/SourceTree/Heattreatment/Core/Src/W25Q64/w25qxx.h \
+ D:/SourceTree/Heattreatment/Core/Src/RTC/ds1307.h
 ../Core/Inc/main.h:
 ../Drivers/STM32L4xx_HAL_Driver/Inc/stm32l4xx_hal.h:
 ../Core/Inc/stm32l4xx_hal_conf.h:
@@ -67,6 +67,6 @@ Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/main.h \
 ../Drivers/STM32L4xx_HAL_Driver/Inc/stm32l4xx_hal_tim_ex.h:
 ../Drivers/STM32L4xx_HAL_Driver/Inc/stm32l4xx_hal_uart.h:
 ../Drivers/STM32L4xx_HAL_Driver/Inc/stm32l4xx_hal_uart_ex.h:
-D:/Naveen_wrkspace/Heattreatment/USM_stm32_migration/heattreatment_USM2_stm_09_10_23_B1/Core/Src/W5500_C/w5500_spi.h:
-D:/Naveen_wrkspace/Heattreatment/USM_stm32_migration/heattreatment_USM2_stm_09_10_23_B1/Core/Src/W25Q64/w25qxx.h:
-D:/Naveen_wrkspace/Heattreatment/USM_stm32_migration/heattreatment_USM2_stm_09_10_23_B1/Core/Src/RTC/ds1307.h:
+D:/SourceTree/Heattreatment/Core/Src/W5500_C/w5500_spi.h:
+D:/SourceTree/Heattreatment/Core/Src/W25Q64/w25qxx.h:
+D:/SourceTree/Heattreatment/Core/Src/RTC/ds1307.h:

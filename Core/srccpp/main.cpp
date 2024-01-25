@@ -66,7 +66,6 @@ void cppMain()
 		{
 			Flag1Second=0;
 			displayRoutineInst.run();
-			//ethernetHTTPRoutine();
 			esp8266Inst.run();
 		}
 		ESPRXDataSeg();

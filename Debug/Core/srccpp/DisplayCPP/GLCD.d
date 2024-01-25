@@ -1,6 +1,6 @@
 Core/srccpp/DisplayCPP/GLCD.o: ../Core/srccpp/DisplayCPP/GLCD.cpp \
  ../Core/srccpp/DisplayCPP/GLCD.h \
- D:/Naveen_wrkspace/Heattreatment/USM_stm32_migration/heattreatment_USM2_stm_09_10_23_B1/Core/srccpp/Common/common.h \
+ D:/SourceTree/Heattreatment/Core/srccpp/Common/common.h \
  ../Core/Inc/main.h ../Drivers/STM32L4xx_HAL_Driver/Inc/stm32l4xx_hal.h \
  ../Core/Inc/stm32l4xx_hal_conf.h \
  ../Drivers/STM32L4xx_HAL_Driver/Inc/stm32l4xx_hal_rcc.h \
@@ -34,7 +34,7 @@ Core/srccpp/DisplayCPP/GLCD.o: ../Core/srccpp/DisplayCPP/GLCD.cpp \
  ../Drivers/STM32L4xx_HAL_Driver/Inc/stm32l4xx_hal_uart.h \
  ../Drivers/STM32L4xx_HAL_Driver/Inc/stm32l4xx_hal_uart_ex.h
 ../Core/srccpp/DisplayCPP/GLCD.h:
-D:/Naveen_wrkspace/Heattreatment/USM_stm32_migration/heattreatment_USM2_stm_09_10_23_B1/Core/srccpp/Common/common.h:
+D:/SourceTree/Heattreatment/Core/srccpp/Common/common.h:
 ../Core/Inc/main.h:
 ../Drivers/STM32L4xx_HAL_Driver/Inc/stm32l4xx_hal.h:
 ../Core/Inc/stm32l4xx_hal_conf.h:

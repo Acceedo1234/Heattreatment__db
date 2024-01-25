@@ -221,7 +221,7 @@ void ESP8266::Send_WifiCmd()
 	break;
 	case 100:
 	lenOfURl = sprintf(PostUrl_CharFormat,"GET /set_temp?u=4&p=%d&tm=%d&tl=%d&th=%d&"
-						"h=%d&l=%d&ht=%d%&lt=%%d&rv=%%d&bv=%d&yv=%d&rc=%d"
+						"h=%d&l=%d&ht=%d%&lt=%d&rv=%d&bv=%d&yv=%d&rc=%d"
 						"&bc=%d&yc=%d&k=%d&x=%d\r\nHost:usm4-ht.acceedo.in:9012\r\n\r\n",
 						ProcessId_Value,act_temperature_c1,act_temperature_c2,act_temperature_c3,
 						Seq1temperature,Seq2temperature,Seq1durationHr,Seq1durationMin,Seq2durationHr,Seq2durationMin,seq1_remaining_time_Hr,seq1_remaining_time_min,
