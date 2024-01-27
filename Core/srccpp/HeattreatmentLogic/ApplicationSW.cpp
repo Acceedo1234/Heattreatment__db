@@ -34,6 +34,13 @@ extern uint16_t temperatureHighTCP,temperatureLowTCP;
 extern uint8_t durationHrS1,durationMinS1,durationHrS2,durationMinS2;
 extern uint16_t seq1_count_inc,seq2_count_inc;
 
+extern uint16_t Temperature_High_Http,R_Temperature_Low_Http,Temperature_Low_Http;
+extern uint8_t Sequence1_hour_http,Sequence1_minute_http,R_Sequence1_hour_http,R_Sequence1_minute_http;
+extern uint8_t R_Sequence2_hour_http,R_Sequence2_minute_http,Sequence2_hour_http,Sequence2_minute_http;
+extern uint8_t TypeofProcess,No_of_temp_Controller,Type_of_temp_Controller,Type_of_powermeter;
+extern uint8_t Status_Http,IDGen_Skip_Http;
+extern uint16_t R_Temperature_High_Http;
+
 
 uint16_t Seq1temperature;
 uint16_t Seq2temperature;
@@ -47,6 +54,10 @@ uint8_t start_process_control_timer;
 uint8_t stop_timer_count;
 uint8_t process_complete;
 uint16_t seq1_duration_total,seq2_duration_total;
+uint8_t H_Timer01HrValue,H_Timer01MinValue,H_Timer02HrValue,H_Timer02MinValue;
+uint16_t ProcessTotalMin1,ProcessTotalMin2;
+uint16_t Rise_Sequence1_temp,Rise_Sequence2_temp;
+uint8_t Rise_Sequence1_Hour,Rise_Sequence1_Minute,Rise_Sequence2_Hour,Rise_Sequence2_Minute;
 
 Heattreatment::Heattreatment() {
 	// TODO Auto-generated constructor stub
@@ -77,15 +88,15 @@ void Heattreatment::stateMachineProcessControl(void){
 			}
 		break;
 		case 20:
-			m_simEndProcess= HAL_GPIO_ReadPin(GPIOC,InputMachine1_Pin);
-			if((m_simEndProcess ==GPIO_PIN_SET )||(skipIdTCP==0x01))
+			//m_simEndProcess= HAL_GPIO_ReadPin(GPIOC,InputMachine1_Pin);
+			if((m_simEndProcess ==GPIO_PIN_SET )||(IDGen_Skip_Http==0x01))
 			{
 				SEQMONITOR=21;
 				status_to_server=1;
 				seq1_count_inc  = 0;
 				seq2_count_inc  = 0;
 			}
-			else if(m_simEndProcess ==GPIO_PIN_RESET)
+			else if((m_simEndProcess ==GPIO_PIN_RESET)||(IDGen_Skip_Http==0x00))
 			{
 				status_to_server=30;
 			}
@@ -100,44 +111,78 @@ void Heattreatment::stateMachineProcessControl(void){
 				status_to_server = 1;
 		break;
 		case 101:
-				if(statusTCP == 11)
+				if(Status_Http == 11)
 				{
-					if(temperatureHighTCP !=0){
-						Seq1temperature = temperatureHighTCP;
-					}
-					if(temperatureLowTCP !=0){
-						Seq2temperature = temperatureLowTCP;
-					}
-					if(durationHrS1!= Seq1durationHr)
+					if(Temperature_High_Http!=0)
 					{
-						Seq1durationHr = durationHrS1;
-						seq1_duration_total = (Seq1durationHr*60)+Seq1durationMin;
+						if(Seq1temperature!=Temperature_High_Http)
+						{
+							Seq1temperature= Temperature_High_Http;
+						}
 					}
-					if(durationMinS1!= Seq1durationMin)
+					if(Temperature_Low_Http!=0)
 					{
-						Seq1durationMin = durationMinS1;
-						seq1_duration_total = (Seq1durationHr*60)+Seq1durationMin;
+						if(Seq2temperature!=Temperature_Low_Http)
+						{
+							Seq2temperature= Temperature_Low_Http;
+						}
 					}
-					if(durationHrS2!= Seq2durationHr)
+					if(H_Timer01HrValue!=Sequence1_hour_http)
 					{
-						Seq2durationHr = durationHrS2;
-						seq2_duration_total = (Seq2durationHr*60)+Seq2durationMin;
+						H_Timer01HrValue= Sequence1_hour_http;
+						ProcessTotalMin1 	=  (H_Timer01HrValue*60)+  H_Timer01MinValue;
 					}
-					if(durationMinS2!= Seq2durationMin)
+					if(H_Timer01MinValue!=Sequence1_minute_http)
 					{
-						Seq2durationMin = durationMinS2;
-						seq2_duration_total = (Seq2durationHr*60)+Seq2durationMin;
+						H_Timer01MinValue= Sequence1_minute_http;
+						ProcessTotalMin1 	=  (H_Timer01HrValue*60)+  H_Timer01MinValue;
 					}
-					updateSetData		= 1;
-					status_to_server 	= 20;
-					SEQMONITOR			=103;
+					if(H_Timer02HrValue!=Sequence2_hour_http)
+					{
+						H_Timer02HrValue= Sequence2_hour_http;
+					}
+					if(H_Timer02MinValue!=Sequence2_minute_http)
+					{
+						H_Timer02MinValue= Sequence2_minute_http;
+						ProcessTotalMin2   =  (H_Timer02HrValue*60)+  H_Timer02MinValue;
+					}
+					if(R_Temperature_High_Http!=   Rise_Sequence1_temp)
+					{
+						Rise_Sequence1_temp = R_Temperature_High_Http;
+					}
+					if(R_Temperature_Low_Http!=   Rise_Sequence2_temp)
+					{
+						Rise_Sequence2_temp = R_Temperature_Low_Http;
+					}
+					if(R_Sequence1_hour_http!=   Rise_Sequence1_Hour)
+					{
+						Rise_Sequence1_Hour = R_Sequence1_hour_http;
+					}
+					if(R_Sequence1_minute_http!=   Rise_Sequence1_Minute)
+					{
+						Rise_Sequence1_Minute = R_Sequence1_minute_http;
+					}
+
+					if(R_Sequence2_hour_http!=   Rise_Sequence2_Hour)
+					{
+						Rise_Sequence2_Hour = R_Sequence2_hour_http;
+					}
+
+					if(R_Sequence2_minute_http!=   Rise_Sequence2_Minute)
+					{
+						Rise_Sequence2_Minute = R_Sequence2_minute_http;
+					}
+					status_to_server = 20;
+					SEQMONITOR=103;
+					updateSetData=1;
 				}
-				else{
+				else
+				{
 					status_to_server=1;
 				}
 		break;
 		case 103:
-				if(statusTCP ==20){
+				if(Status_Http ==20){
 					status_to_server=20;
 					SEQMONITOR=22;
 				}
@@ -231,7 +276,7 @@ void Heattreatment::stateMachineProcessControl(void){
 				if(process_complete==2){
 					process_complete = 0;
 					start_process_control_timer=0;
-					SEQMONITOR = 24;
+					SEQMONITOR = 26;
 				}
 				else{
 					SEQMONITOR = 25;
@@ -247,7 +292,7 @@ void Heattreatment::stateMachineProcessControl(void){
 			SEQMONITOR   = 10;
 		break;
 	}
-	if((skipIdTCP==10)&&(SEQMONITOR!=26))
+	if((IDGen_Skip_Http==10)&&(SEQMONITOR!=26))
 	{
 		SEQMONITOR = 26;
 	}

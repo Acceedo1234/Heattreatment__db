@@ -18,6 +18,7 @@ public:
 private:
 	uint8_t m_writeFlashBuf[20];
 	uint8_t m_readFlashBuf[20];
+	uint8_t m_readFlashheatBuf[20];
 	void m_writeSeqMonitor();
 	void m_readSeqMonitor();
 	void m_writeHeattreatmentData(void);

@@ -34,7 +34,7 @@ private:
 	uint8_t CMDATCwjapRead[13]="AT+CWJAP?\r\n";
 	uint8_t CmdATCipmuxWrite[15]="AT+CIPMUX=1\r\n";
 	uint8_t CmdAtCipStartWrite[50]= {'A','T','+','C','I','P','S','T','A','R','T',
-			'=','1',',','"','T','C','P','"',',','"','u','s','m','2','-','h','t','.',
+			'=','1',',','"','T','C','P','"',',','"','u','s','m','4','-','h','t','.',
 			'a','c','c','e','e','d','o','.','i','n','"',',','9','0','1','2','\r','\n'};
 	uint8_t SendData_uintFormat[20];
 	char SendData_charFormat[20]={0};

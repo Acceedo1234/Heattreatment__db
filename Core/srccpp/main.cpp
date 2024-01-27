@@ -60,7 +60,6 @@ void cppMain()
 			Flag100milliSeconds=0;
 			offlineStorageInst.run();
 			ModbusInst.ModbusReadTransaction();
-
 		}
 		if(Flag1Second)
 		{
@@ -68,6 +67,6 @@ void cppMain()
 			displayRoutineInst.run();
 			esp8266Inst.run();
 		}
-		ESPRXDataSeg();
+		//ESPRXDataSeg();
 	}
 }

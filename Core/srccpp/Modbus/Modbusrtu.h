@@ -25,7 +25,7 @@ public:
 	uint8_t u8MBFunction;
 	uint16_t _u16ReadAddress;
 	uint16_t _u16WriteAddress;
-	uint16_t _u16ReadQty;
+	uint8_t _u16ReadQty;
 	uint16_t u16CRC;
 	uint16_t m_settemperature;
 

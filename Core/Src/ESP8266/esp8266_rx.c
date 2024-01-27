@@ -15,6 +15,16 @@ uint8_t SW_Date,SW_Month,SW_Year;
 uint16_t temperatureSetOL,temperaturehighSetOL,temperatureLowSetOL,productiontimeSetOL;
 uint8_t productionhysPosSetOL,productionhysNegSetOL,SWCurrentShift,productChangeOL;
 
+uint8_t UnitId_Http;
+uint16_t ProcessId_Http_Msb,ProcessId_Http_LSB;
+uint16_t R_Temperature_High_Http;
+uint16_t Temperature_High_Http,R_Temperature_Low_Http,Temperature_Low_Http;
+uint8_t Sequence1_hour_http,Sequence1_minute_http,R_Sequence1_hour_http,R_Sequence1_minute_http;
+uint8_t R_Sequence2_hour_http,R_Sequence2_minute_http,Sequence2_hour_http,Sequence2_minute_http;
+uint8_t TypeofProcess,No_of_temp_Controller,Type_of_temp_Controller,Type_of_powermeter;
+uint8_t Status_Http,IDGen_Skip_Http;
+
+
 extern void W25qxx_ReadSector(uint8_t *pBuffer, uint32_t Sector_Address, uint32_t OffsetInByte, uint32_t NumByteToRead_up_to_SectorSize);
 extern void W25qxx_WriteSector(uint8_t *pBuffer, uint32_t Sector_Address, uint32_t OffsetInByte, uint32_t NumByteToWrite_up_to_SectorSize);
 extern void W25qxx_EraseSector(uint32_t SectorAddr);
@@ -471,6 +481,7 @@ void ESPRxDecoder(unsigned char Rxwifi_data,unsigned char Rxseqdecoder)
 			 else if(Data_bufferptr==2)
 			 {
 				 Uart_rx_buffer[1] = DecToASCIIFun(Rxwifi_data);
+				 UnitId_Http = Uart_rx_buffer[1]+Uart_rx_buffer[0]*10;
 				 Data_bufferptr=3;
 			 }
 			 else if(Data_bufferptr==3)	 //,
@@ -526,6 +537,8 @@ void ESPRxDecoder(unsigned char Rxwifi_data,unsigned char Rxseqdecoder)
 			 {
 				 Data_bufferptr=14;
 				 Uart_rx_buffer[11] = DecToASCIIFun(Rxwifi_data);
+				 ProcessId_Http_Msb = Uart_rx_buffer[5]+ (Uart_rx_buffer[4]*10)+(Uart_rx_buffer[3]*100)+(Uart_rx_buffer[2]*1000);
+				 ProcessId_Http_LSB = Uart_rx_buffer[9]+(Uart_rx_buffer[8]*10)+(Uart_rx_buffer[7]*100)+(Uart_rx_buffer[6]*1000);
 			 }
 			 else if(Data_bufferptr==14)	//,
 			 {
@@ -550,6 +563,7 @@ void ESPRxDecoder(unsigned char Rxwifi_data,unsigned char Rxseqdecoder)
 			 {
 				 Data_bufferptr=19;
 				 Uart_rx_buffer[15] = DecToASCIIFun(Rxwifi_data);
+				 R_Temperature_High_Http = Uart_rx_buffer[15]+ (Uart_rx_buffer[14]*10)+(Uart_rx_buffer[13]*100)+(Uart_rx_buffer[12]*1000);
 			 }
 			 else if(Data_bufferptr==19)	//,
 			 {
@@ -574,6 +588,7 @@ void ESPRxDecoder(unsigned char Rxwifi_data,unsigned char Rxseqdecoder)
 			 {
 				 Data_bufferptr=24;
 				 Uart_rx_buffer[19] = DecToASCIIFun(Rxwifi_data);
+				 Temperature_High_Http = Uart_rx_buffer[19]+ (Uart_rx_buffer[18]*10)+(Uart_rx_buffer[17]*100)+(Uart_rx_buffer[16]*1000);
 			 }
 			 else if(Data_bufferptr==24)   //,
 			 {
@@ -598,6 +613,7 @@ void ESPRxDecoder(unsigned char Rxwifi_data,unsigned char Rxseqdecoder)
 			 {
 				 Data_bufferptr=29;
 				 Uart_rx_buffer[23] = DecToASCIIFun(Rxwifi_data);
+				 R_Temperature_Low_Http = Uart_rx_buffer[23]+ (Uart_rx_buffer[22]*10)+(Uart_rx_buffer[21]*100)+(Uart_rx_buffer[20]*1000);
 			 }
 			 else if(Data_bufferptr==29)  //,
 			 {
@@ -622,6 +638,7 @@ void ESPRxDecoder(unsigned char Rxwifi_data,unsigned char Rxseqdecoder)
 			 {
 				 Data_bufferptr=35;
 				 Uart_rx_buffer[27] = DecToASCIIFun(Rxwifi_data);
+				 Temperature_Low_Http = Uart_rx_buffer[27]+ (Uart_rx_buffer[26]*10)+(Uart_rx_buffer[25]*100)+(Uart_rx_buffer[24]*1000);
 			 }
 			 else if(Data_bufferptr==35)  //,
 			 {
@@ -636,6 +653,7 @@ void ESPRxDecoder(unsigned char Rxwifi_data,unsigned char Rxseqdecoder)
 			 {
 				 Data_bufferptr=38;
 				 Uart_rx_buffer[29] = DecToASCIIFun(Rxwifi_data);
+				 R_Sequence1_hour_http = Uart_rx_buffer[29]+(Uart_rx_buffer[28]*10);
 			 }
 			 else if(Data_bufferptr==38)  //R_seq1_min
 			 {
@@ -646,6 +664,7 @@ void ESPRxDecoder(unsigned char Rxwifi_data,unsigned char Rxseqdecoder)
 			 {
 				 Data_bufferptr=40;
 				 Uart_rx_buffer[31] = DecToASCIIFun(Rxwifi_data);
+				 R_Sequence1_minute_http = Uart_rx_buffer[31]+(Uart_rx_buffer[30]*10);
 			 }
 			 else if(Data_bufferptr==40)  //,
 			 {
@@ -660,6 +679,7 @@ void ESPRxDecoder(unsigned char Rxwifi_data,unsigned char Rxseqdecoder)
 			 {
 				 Data_bufferptr=43;
 				 Uart_rx_buffer[33] = DecToASCIIFun(Rxwifi_data);
+				 Sequence1_hour_http = Uart_rx_buffer[33]+(Uart_rx_buffer[32]*10);
 			 }
 			 else if(Data_bufferptr==43)  //seq1_min
 			 {
@@ -670,6 +690,7 @@ void ESPRxDecoder(unsigned char Rxwifi_data,unsigned char Rxseqdecoder)
 			 {
 				 Data_bufferptr=45;
 				 Uart_rx_buffer[35] = DecToASCIIFun(Rxwifi_data);
+				 Sequence1_minute_http = Uart_rx_buffer[35]+(Uart_rx_buffer[34]*10);
 			 }
 			 else if(Data_bufferptr==45)  //,
 			 {
@@ -684,6 +705,7 @@ void ESPRxDecoder(unsigned char Rxwifi_data,unsigned char Rxseqdecoder)
 			 {
 				 Data_bufferptr=48;
 				 Uart_rx_buffer[37] = DecToASCIIFun(Rxwifi_data);
+				 R_Sequence2_hour_http = Uart_rx_buffer[37]+(Uart_rx_buffer[36]*10);
 			 }
 			 else if(Data_bufferptr==48)  //R_seq2_hour
 			 {
@@ -694,6 +716,7 @@ void ESPRxDecoder(unsigned char Rxwifi_data,unsigned char Rxseqdecoder)
 			 {
 				 Data_bufferptr=50;
 				 Uart_rx_buffer[39] = DecToASCIIFun(Rxwifi_data);
+				 R_Sequence2_minute_http = Uart_rx_buffer[39]+(Uart_rx_buffer[38]*10);
 			 }
 			 else if(Data_bufferptr==50)  //seq1_minute
 			 {
@@ -708,6 +731,8 @@ void ESPRxDecoder(unsigned char Rxwifi_data,unsigned char Rxseqdecoder)
 			 {
 				 Data_bufferptr=54;
 				 Uart_rx_buffer[41] = DecToASCIIFun(Rxwifi_data);
+				 Sequence2_hour_http = Uart_rx_buffer[41]+(Uart_rx_buffer[40]*10);
+
 			 }
 			 else if(Data_bufferptr==54)  //seq2_minute
 			 {
@@ -718,6 +743,7 @@ void ESPRxDecoder(unsigned char Rxwifi_data,unsigned char Rxseqdecoder)
 			 {
 				 Data_bufferptr=56;
 				 Uart_rx_buffer[43] = DecToASCIIFun(Rxwifi_data);
+				 Sequence2_minute_http = Uart_rx_buffer[43]+(Uart_rx_buffer[42]*10);
 			 }
 			 else if(Data_bufferptr==56)  //,
 			 {
@@ -727,6 +753,7 @@ void ESPRxDecoder(unsigned char Rxwifi_data,unsigned char Rxseqdecoder)
 			 {
 				 Data_bufferptr=58;
 				 Uart_rx_buffer[44] = DecToASCIIFun(Rxwifi_data);
+				 TypeofProcess = Uart_rx_buffer[44];
 			 }
 			 else if(Data_bufferptr==58)  //,
 			 {
@@ -741,6 +768,8 @@ void ESPRxDecoder(unsigned char Rxwifi_data,unsigned char Rxseqdecoder)
 			 {
 				 Data_bufferptr=61;
 				 Uart_rx_buffer[46] = DecToASCIIFun(Rxwifi_data);
+				 TypeofProcess = Uart_rx_buffer[46]+(Uart_rx_buffer[45]*10);
+
 			 }
 			 else if(Data_bufferptr==61)  //,
 			 {
@@ -755,6 +784,7 @@ void ESPRxDecoder(unsigned char Rxwifi_data,unsigned char Rxseqdecoder)
 			 {
 				 Data_bufferptr=64;
 				 Uart_rx_buffer[48] = DecToASCIIFun(Rxwifi_data);
+				 TypeofProcess = Uart_rx_buffer[48]+(Uart_rx_buffer[47]*10);
 			 }
 			 else if(Data_bufferptr==64)  //No of temperture controller
 			 {
@@ -764,6 +794,7 @@ void ESPRxDecoder(unsigned char Rxwifi_data,unsigned char Rxseqdecoder)
 			 {
 				 Data_bufferptr=66;
 				 Uart_rx_buffer[49] = DecToASCIIFun(Rxwifi_data);
+				 No_of_temp_Controller = Uart_rx_buffer[49];
 			 }
 			 else if(Data_bufferptr==66)  //Type of temperture controller
 			 {
@@ -773,6 +804,7 @@ void ESPRxDecoder(unsigned char Rxwifi_data,unsigned char Rxseqdecoder)
 			 {
 				 Data_bufferptr=68;
 				 Uart_rx_buffer[50] = DecToASCIIFun(Rxwifi_data);
+				 Type_of_temp_Controller = Uart_rx_buffer[50];
 			 }
 			 else if(Data_bufferptr==68)  //Type of power meter
 			 {
@@ -782,6 +814,7 @@ void ESPRxDecoder(unsigned char Rxwifi_data,unsigned char Rxseqdecoder)
 			 {
 				 Data_bufferptr=70;
 				 Uart_rx_buffer[51] = DecToASCIIFun(Rxwifi_data);
+				 Type_of_powermeter = Uart_rx_buffer[51];
 			 }
 			 else if(Data_bufferptr==70)  //,
 			 {
@@ -796,6 +829,7 @@ void ESPRxDecoder(unsigned char Rxwifi_data,unsigned char Rxseqdecoder)
 			 {
 				 Data_bufferptr=73;
 				 Uart_rx_buffer[53] = DecToASCIIFun(Rxwifi_data);
+				 Status_Http = Uart_rx_buffer[53]+(Uart_rx_buffer[52]*10);
 			 }
 			  else if(Data_bufferptr==73)  //,
 			 {
@@ -810,6 +844,7 @@ void ESPRxDecoder(unsigned char Rxwifi_data,unsigned char Rxseqdecoder)
 			 {
 				 Data_bufferptr=0;
 				 Uart_rx_buffer[55] = DecToASCIIFun(Rxwifi_data);
+				 IDGen_Skip_Http = Uart_rx_buffer[55]+(Uart_rx_buffer[54]*10);
 				 RefreshBlockInfo = 0;
 				 RxCompleteU2C1WIFI=1;
 				 Updatetimeinfo=1;

@@ -16,6 +16,7 @@ bool W25qxx_IsEmptySector(uint32_t Sector_Address, uint32_t OffsetInByte, uint32
 void W25qxx_WriteSector(uint8_t *pBuffer, uint32_t Sector_Address, uint32_t OffsetInByte, uint32_t NumByteToWrite_up_to_SectorSize);
 void W25qxx_EraseSector(uint32_t SectorAddr);
 }
+extern UART_HandleTypeDef hlpuart1;
 
 uint8_t wifi_command;
 uint8_t ESP8266TXData[250];
@@ -31,15 +32,19 @@ uint8_t url_buffer;
 uint16_t Dyn_data_calc;
 uint16_t ContentLength;
 uint8_t RefreshBlockInfo;
-extern uint8_t BlockStatusOffline[40];
 uint8_t powercycleRefresh;
-
 uint8_t NoOfBatch_to_Send,Framecheck;
-
-extern UART_HandleTypeDef hlpuart1;
-extern uint8_t ProductionSet_uintFormat[200];
 uint8_t ProductionSet_uintFormat_MEM[850]={0};
 uint16_t lenOfURl;
+uint16_t r_set_duration_seq1,set_duration_seq1,r_set_duration_seq2,set_duration_seq2;
+uint16_t remaining_duration_seq1,remaining_duration_seq2;
+extern uint8_t BlockStatusOffline[40];
+extern uint8_t ProductionSet_uintFormat[200];
+extern uint16_t water_temperature;
+extern uint16_t Rise_Sequence1_temp,Rise_Sequence2_temp;
+extern uint8_t Rise_Sequence1_Hour,Rise_Sequence1_Minute,Rise_Sequence2_Hour,Rise_Sequence2_Minute;
+extern uint8_t H_Timer01HrValue,H_Timer01MinValue,H_Timer02HrValue,H_Timer02MinValue;
+extern uint8_t R_Sequence2_hour_http,R_Sequence2_minute_http,Sequence2_hour_http,Sequence2_minute_http;
 
 ESP8266::ESP8266() {
 	// TODO Auto-generated constructor stub
@@ -201,9 +206,21 @@ void ESP8266::Send_WifiCmd()
 	}
 	break;
 	case 90:   //CIPSEND
-
 	NoOfdata_byte	= 18;
 	//lenOfURl = sprintf(PostUrl_CharFormat,"GET /isc1-lab.acceedo.in:9009/logs?mac=01&t=373&h=972&W=01&U=01&x=0\r\nHOST:usm2-ht.acceedo.in:9009\r\n\r\n");
+	r_set_duration_seq1 = (Rise_Sequence1_Minute%10)+((Rise_Sequence1_Minute/10)*10)+((Rise_Sequence1_Hour%10)*100)+((Rise_Sequence1_Hour/10)*1000);
+	set_duration_seq1 = (H_Timer01MinValue%10)+((H_Timer01MinValue/10)*10)+((H_Timer01HrValue%10)*100)+((H_Timer01HrValue/10)*1000);
+	r_set_duration_seq2 = (Rise_Sequence2_Minute%10)+((Rise_Sequence2_Minute/10)*10)+((R_Sequence2_hour_http%10)*100)+((R_Sequence2_hour_http/10)*1000);
+	set_duration_seq2 = (H_Timer02MinValue%10)+((H_Timer02MinValue/10)*10)+((H_Timer02HrValue%10)*100)+((H_Timer02HrValue/10)*1000);
+	remaining_duration_seq1 =(seq1_remaining_time_min%10)+((seq1_remaining_time_min/10)*10)+((seq1_remaining_time_Hr%10)*100)+((seq1_remaining_time_Hr/10)*1000);
+	remaining_duration_seq2 =(seq2_remaining_time_min%10)+((seq2_remaining_time_min/10)*10)+((seq2_remaining_time_Hr%10)*100)+((seq2_remaining_time_Hr/10)*1000);
+	lenOfURl = sprintf(PostUrl_CharFormat,"GET /set_temp?u=4&p=%d&tm=%d&tl=%d&th=%d&hr=%d"
+				"h=%d&lr=%d&l=%d&hrt=%04d&ht=%04d%&lrt=%04d&lt=%04d&rv=%04d&bv=%04d&yv=%d&rc=%03d"
+				"&bc=%d&yc=%d&k=%d&x=%02d\r\nHost:usm4-ht.acceedo.in:9012\r\n\r\n",
+				ProcessId_Value,act_temperature_c1,act_temperature_c2,act_temperature_c3,
+				Rise_Sequence1_temp,Seq1temperature,Rise_Sequence2_temp,Seq2temperature,r_set_duration_seq1,set_duration_seq1,r_set_duration_seq2,set_duration_seq2,
+				remaining_duration_seq1,remaining_duration_seq2,act_temperature_c4,
+				1,water_temperature,0,1,status_to_server);
 	sprintf(SendData_charFormat,"AT+CIPSEND=1,%d\r\n",lenOfURl);
 	memcpy(SendData_uintFormat,SendData_charFormat,NoOfdata_byte);
 	HAL_UART_Transmit_IT(&hlpuart1,SendData_uintFormat,NoOfdata_byte);
@@ -220,12 +237,20 @@ void ESP8266::Send_WifiCmd()
 	}
 	break;
 	case 100:
-	lenOfURl = sprintf(PostUrl_CharFormat,"GET /set_temp?u=4&p=%d&tm=%d&tl=%d&th=%d&"
-						"h=%d&l=%d&ht=%d%&lt=%d&rv=%d&bv=%d&yv=%d&rc=%d"
-						"&bc=%d&yc=%d&k=%d&x=%d\r\nHost:usm4-ht.acceedo.in:9012\r\n\r\n",
+
+		r_set_duration_seq1 = (Rise_Sequence1_Minute%10)+((Rise_Sequence1_Minute/10)*10)+((Rise_Sequence1_Hour%10)*100)+((Rise_Sequence1_Hour/10)*1000);
+		set_duration_seq1 = (H_Timer01MinValue%10)+((H_Timer01MinValue/10)*10)+((H_Timer01HrValue%10)*100)+((H_Timer01HrValue/10)*1000);
+		r_set_duration_seq2 = (Rise_Sequence2_Minute%10)+((Rise_Sequence2_Minute/10)*10)+((R_Sequence2_hour_http%10)*100)+((R_Sequence2_hour_http/10)*1000);
+		set_duration_seq2 = (H_Timer02MinValue%10)+((H_Timer02MinValue/10)*10)+((H_Timer02HrValue%10)*100)+((H_Timer02HrValue/10)*1000);
+		remaining_duration_seq1 =(seq1_remaining_time_min%10)+((seq1_remaining_time_min/10)*10)+((seq1_remaining_time_Hr%10)*100)+((seq1_remaining_time_Hr/10)*1000);
+		remaining_duration_seq2 =(seq2_remaining_time_min%10)+((seq2_remaining_time_min/10)*10)+((seq2_remaining_time_Hr%10)*100)+((seq2_remaining_time_Hr/10)*1000);
+	lenOfURl = sprintf(PostUrl_CharFormat,"GET /set_temp?u=4&p=%d&tm=%d&tl=%d&th=%d&hr=%d"
+						"h=%d&lr=%d&l=%d&hrt=%04d&ht=%04d%&lrt=%04d&lt=%04d&rv=%04d&bv=%04d&yv=%d&rc=%03d"
+						"&bc=%d&yc=%d&k=%d&x=%02d\r\nHost:usm4-ht.acceedo.in:9012\r\n\r\n",
 						ProcessId_Value,act_temperature_c1,act_temperature_c2,act_temperature_c3,
-						Seq1temperature,Seq2temperature,Seq1durationHr,Seq1durationMin,Seq2durationHr,Seq2durationMin,seq1_remaining_time_Hr,seq1_remaining_time_min,
-						seq2_remaining_time_Hr,seq2_remaining_time_min,act_temperature_c4,1,100,100,100,status_to_server);
+						Rise_Sequence1_temp,Seq1temperature,Rise_Sequence2_temp,Seq2temperature,r_set_duration_seq1,set_duration_seq1,r_set_duration_seq2,set_duration_seq2,
+						remaining_duration_seq1,remaining_duration_seq2,act_temperature_c4,
+						1,water_temperature,0,1,status_to_server);
 	memcpy(PostUrl_uintFormat,PostUrl_CharFormat,lenOfURl);
 	wifi_command	=	101;
 	Rxseqdecoder=7;
@@ -234,7 +259,7 @@ void ESP8266::Send_WifiCmd()
 	HAL_UART_Transmit_IT(&hlpuart1,PostUrl_uintFormat,lenOfURl);
 	break;
 	case 101:
-		if(++Timerdelay>10)
+		if(++Timerdelay>20)
 		{
 			Timerdelay=0;
 			wifi_command=10;
