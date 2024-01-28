@@ -32,7 +32,7 @@ public:
 	uint16_t m_settemperature;
 	uint16_t m_setTime;
 	uint8_t u8ModbusRegister[8];
-	uint8_t u8ModbusRegisterdwin[16];
+	uint8_t u8ModbusRegisterdwin[48];
 	uint8_t noOfDataDwin;
 private:
 	uint8_t mTemperatureSensorId=1;

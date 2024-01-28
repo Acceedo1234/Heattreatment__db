@@ -23,11 +23,16 @@ constexpr uint8_t multipleReadRequestH = 0x04;
 constexpr uint8_t multipleReadRequestL = 0x83;
 
 constexpr uint8_t WaterTemperatureId=0x05;
-uint8_t TxSeqComplete;
-
 extern uint16_t Temp_Rising_Reference;
 extern uint8_t TimeReference_Hr,TimeReference_Min,Time_Rising_Ref_Hr,Time_Rising_Ref_Min;
 extern uint16_t temperature_reference;
+extern uint16_t act_temperature_c1,act_temperature_c2,act_temperature_c3,act_temperature_c4;
+extern uint16_t Temperature_High_Http,Temperature_Low_Http,R_Temperature_High_Http,R_Temperature_Low_Http;
+extern uint8_t H_Timer01HrValue,H_Timer01MinValue,H_Timer02HrValue,H_Timer02MinValue;
+extern uint8_t Rise_Sequence1_Hour,Rise_Sequence1_Minute,Rise_Sequence2_Hour,Rise_Sequence2_Minute;
+extern uint8_t start_process_control_timer;
+
+uint8_t TxSeqComplete;
 
 uint8_t Rx_Dwin_Point;
 Modbusrtu::Modbusrtu() {
@@ -188,18 +193,49 @@ void Modbusrtu::dwinFrame(void)
 		u8ModbusRegisterdwin[3] = multipleWriteRequestL;
 		u8ModbusRegisterdwin[4] = 0x20;
 		u8ModbusRegisterdwin[5] = 0x00;
-		u8ModbusRegisterdwin[6] = highByte(100);
-		u8ModbusRegisterdwin[7] = lowByte(100);
-		u8ModbusRegisterdwin[8] = highByte(200);
-		u8ModbusRegisterdwin[9] = lowByte(200);
-		u8ModbusRegisterdwin[10] = 0;
-		u8ModbusRegisterdwin[11] = 0;
-		u8ModbusRegisterdwin[12] = 0;
-		u8ModbusRegisterdwin[13] = 0;
-		u8ModbusRegisterdwin[14] = 0;
-		u8ModbusRegisterdwin[15] = 0;
+		u8ModbusRegisterdwin[6] = highByte(act_temperature_c1);
+		u8ModbusRegisterdwin[7] = lowByte(act_temperature_c1);
+		u8ModbusRegisterdwin[8] = highByte(act_temperature_c2);
+		u8ModbusRegisterdwin[9] = lowByte(act_temperature_c2);
+		u8ModbusRegisterdwin[10] = highByte(act_temperature_c3);
+		u8ModbusRegisterdwin[11] = lowByte(act_temperature_c3);
+		u8ModbusRegisterdwin[12] = highByte(act_temperature_c4);
+		u8ModbusRegisterdwin[13] = lowByte(act_temperature_c4);
 
-		noOfDataDwin=16;
+		u8ModbusRegisterdwin[14] = highByte(Temperature_High_Http);
+		u8ModbusRegisterdwin[15] = lowByte(Temperature_High_Http);
+		u8ModbusRegisterdwin[16] = highByte(Temperature_Low_Http);
+		u8ModbusRegisterdwin[17] = lowByte(Temperature_Low_Http);
+		u8ModbusRegisterdwin[18] = highByte(R_Temperature_High_Http);
+		u8ModbusRegisterdwin[19] = lowByte(R_Temperature_High_Http);
+		u8ModbusRegisterdwin[20] = highByte(R_Temperature_Low_Http);
+		u8ModbusRegisterdwin[21] = lowByte(R_Temperature_Low_Http);
+
+		u8ModbusRegisterdwin[20] = highByte(0);
+		u8ModbusRegisterdwin[21] = lowByte(1);
+
+		u8ModbusRegisterdwin[22] = highByte(H_Timer01HrValue);
+		u8ModbusRegisterdwin[23] = lowByte(H_Timer01HrValue);
+		u8ModbusRegisterdwin[24] = highByte(H_Timer01MinValue);
+		u8ModbusRegisterdwin[25] = lowByte(H_Timer01MinValue);
+		u8ModbusRegisterdwin[26] = highByte(H_Timer02HrValue);
+		u8ModbusRegisterdwin[27] = lowByte(H_Timer02HrValue);
+		u8ModbusRegisterdwin[28] = highByte(H_Timer02MinValue);
+		u8ModbusRegisterdwin[29] = lowByte(H_Timer02MinValue);
+
+		u8ModbusRegisterdwin[30] = highByte(Rise_Sequence1_Hour);
+		u8ModbusRegisterdwin[31] = lowByte(Rise_Sequence1_Hour);
+		u8ModbusRegisterdwin[32] = highByte(Rise_Sequence2_Hour);
+		u8ModbusRegisterdwin[33] = lowByte(Rise_Sequence2_Hour);
+//Timer status
+		u8ModbusRegisterdwin[34] = highByte(start_process_control_timer);
+		u8ModbusRegisterdwin[35] = lowByte(start_process_control_timer);
+
+		u8ModbusRegisterdwin[36] = highByte(0);
+		u8ModbusRegisterdwin[37] = lowByte(0);
+
+
+		noOfDataDwin=38;
 		Cntid_dwin=1;
 	break;
 	case 1:

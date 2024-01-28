@@ -34,12 +34,11 @@ extern uint16_t temperatureHighTCP,temperatureLowTCP;
 extern uint8_t durationHrS1,durationMinS1,durationHrS2,durationMinS2;
 extern uint16_t seq1_count_inc,seq2_count_inc;
 
-extern uint16_t Temperature_High_Http,R_Temperature_Low_Http,Temperature_Low_Http;
+extern uint16_t Temperature_High_Http,Temperature_Low_Http,R_Temperature_High_Http,R_Temperature_Low_Http;
 extern uint8_t Sequence1_hour_http,Sequence1_minute_http,R_Sequence1_hour_http,R_Sequence1_minute_http;
 extern uint8_t R_Sequence2_hour_http,R_Sequence2_minute_http,Sequence2_hour_http,Sequence2_minute_http;
 extern uint8_t TypeofProcess,No_of_temp_Controller,Type_of_temp_Controller,Type_of_powermeter;
 extern uint8_t Status_Http,IDGen_Skip_Http;
-extern uint16_t R_Temperature_High_Http;
 
 
 uint16_t Seq1temperature;
@@ -415,7 +414,7 @@ void Heattreatment::specialHandler(void)
 		}
 		if(R_Sequence1_minute_http!=   Rise_Sequence1_Minute)
 		{
-			Rise_Sequence1_Hour = R_Sequence1_minute_http;
+			Rise_Sequence1_Minute = R_Sequence1_minute_http;
 			updateSetData=1;
 		}
 
