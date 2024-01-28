@@ -17,7 +17,7 @@ constexpr uint16_t Step2_Time_Add= 4100;
 
 constexpr uint8_t START_BYTE_1=0x5A;
 constexpr uint8_t START_BYTE_2=0xA5;
-constexpr uint8_t multipleWriteRequestH = 0x0B;
+constexpr uint8_t multipleWriteRequestH = 0x28;
 constexpr uint8_t multipleWriteRequestL = 0x82;
 constexpr uint8_t multipleReadRequestH = 0x04;
 constexpr uint8_t multipleReadRequestL = 0x83;
@@ -31,10 +31,12 @@ extern uint16_t Temperature_High_Http,Temperature_Low_Http,R_Temperature_High_Ht
 extern uint8_t H_Timer01HrValue,H_Timer01MinValue,H_Timer02HrValue,H_Timer02MinValue;
 extern uint8_t Rise_Sequence1_Hour,Rise_Sequence1_Minute,Rise_Sequence2_Hour,Rise_Sequence2_Minute;
 extern uint8_t start_process_control_timer;
+extern uint8_t seq1_remaining_time_Hr,seq1_remaining_time_min,seq2_remaining_time_Hr,seq2_remaining_time_min;
 
 uint8_t TxSeqComplete;
-
+uint8_t SolunishingRunning,PrecipitationRun,Idle_State;
 uint8_t Rx_Dwin_Point;
+
 Modbusrtu::Modbusrtu() {
 	// TODO Auto-generated constructor stub
 
@@ -209,33 +211,49 @@ void Modbusrtu::dwinFrame(void)
 		u8ModbusRegisterdwin[18] = highByte(R_Temperature_High_Http);
 		u8ModbusRegisterdwin[19] = lowByte(R_Temperature_High_Http);
 		u8ModbusRegisterdwin[20] = highByte(R_Temperature_Low_Http);
-		u8ModbusRegisterdwin[21] = lowByte(R_Temperature_Low_Http);
+		u8ModbusRegisterdwin[21] = lowByte(R_Temperature_Low_Http);//2007
 
-		u8ModbusRegisterdwin[20] = highByte(0);
-		u8ModbusRegisterdwin[21] = lowByte(1);
+		u8ModbusRegisterdwin[22] = highByte(0);
+		u8ModbusRegisterdwin[23] = lowByte(1);//2008
 
-		u8ModbusRegisterdwin[22] = highByte(H_Timer01HrValue);
-		u8ModbusRegisterdwin[23] = lowByte(H_Timer01HrValue);
-		u8ModbusRegisterdwin[24] = highByte(H_Timer01MinValue);
-		u8ModbusRegisterdwin[25] = lowByte(H_Timer01MinValue);
-		u8ModbusRegisterdwin[26] = highByte(H_Timer02HrValue);
-		u8ModbusRegisterdwin[27] = lowByte(H_Timer02HrValue);
-		u8ModbusRegisterdwin[28] = highByte(H_Timer02MinValue);
-		u8ModbusRegisterdwin[29] = lowByte(H_Timer02MinValue);
+		u8ModbusRegisterdwin[24] = highByte(H_Timer01HrValue);
+		u8ModbusRegisterdwin[25] = lowByte(H_Timer01HrValue);
+		u8ModbusRegisterdwin[26] = highByte(H_Timer01MinValue);
+		u8ModbusRegisterdwin[27] = lowByte(H_Timer01MinValue);
+		u8ModbusRegisterdwin[28] = highByte(H_Timer02HrValue);
+		u8ModbusRegisterdwin[29] = lowByte(H_Timer02HrValue);
+		u8ModbusRegisterdwin[30] = highByte(H_Timer02MinValue);
+		u8ModbusRegisterdwin[31] = lowByte(H_Timer02MinValue);
 
-		u8ModbusRegisterdwin[30] = highByte(Rise_Sequence1_Hour);
-		u8ModbusRegisterdwin[31] = lowByte(Rise_Sequence1_Hour);
-		u8ModbusRegisterdwin[32] = highByte(Rise_Sequence2_Hour);
-		u8ModbusRegisterdwin[33] = lowByte(Rise_Sequence2_Hour);
+		if(start_process_control_timer == 1){SolunishingRunning=1;PrecipitationRun=0;Idle_State=0;}
+		else if(start_process_control_timer ==2){SolunishingRunning=0;PrecipitationRun=2;Idle_State=0;}
+		else{SolunishingRunning=0;PrecipitationRun=0;Idle_State=1;}
+
+		u8ModbusRegisterdwin[32] = highByte(SolunishingRunning);//1
+		u8ModbusRegisterdwin[33] = lowByte(SolunishingRunning);
+		u8ModbusRegisterdwin[34] = highByte(PrecipitationRun);//2
+		u8ModbusRegisterdwin[35] = lowByte(PrecipitationRun);
 //Timer status
-		u8ModbusRegisterdwin[34] = highByte(start_process_control_timer);
-		u8ModbusRegisterdwin[35] = lowByte(start_process_control_timer);
+		u8ModbusRegisterdwin[36] = highByte(Idle_State);//0
+		u8ModbusRegisterdwin[37] = lowByte(Idle_State);
+		if(start_process_control_timer==1){
+		u8ModbusRegisterdwin[38] = highByte(seq1_remaining_time_Hr);
+		u8ModbusRegisterdwin[39] = lowByte(seq1_remaining_time_Hr);
+		u8ModbusRegisterdwin[40] = highByte(seq1_remaining_time_min);
+		u8ModbusRegisterdwin[41] = lowByte(seq1_remaining_time_min);}
+		else if(start_process_control_timer==2){
+		u8ModbusRegisterdwin[38] = highByte(seq2_remaining_time_Hr);
+		u8ModbusRegisterdwin[39] = lowByte(seq2_remaining_time_Hr);
+		u8ModbusRegisterdwin[40] = highByte(seq2_remaining_time_min);
+		u8ModbusRegisterdwin[41] = lowByte(seq2_remaining_time_min);}
+		else{
+		u8ModbusRegisterdwin[38] = highByte(0);
+		u8ModbusRegisterdwin[39] = lowByte(0);
+		u8ModbusRegisterdwin[40] = highByte(0);
+		u8ModbusRegisterdwin[41] = lowByte(0);}
 
-		u8ModbusRegisterdwin[36] = highByte(0);
-		u8ModbusRegisterdwin[37] = lowByte(0);
 
-
-		noOfDataDwin=38;
+		noOfDataDwin=42;
 		Cntid_dwin=1;
 	break;
 	case 1:
