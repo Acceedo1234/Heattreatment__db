@@ -166,7 +166,7 @@ void OfflineStorage::m_readHeattreatmentData(){
 	SEQMONITOR_K1 = SEQMONITOR;
 
 	ProcessTotalMin1 	=  (H_Timer01HrValue*60)+  H_Timer01MinValue;
-	ProcessTotalMin1 	=  (H_Timer01HrValue*60)+  H_Timer01MinValue;
+	ProcessTotalMin2 	=  (H_Timer02HrValue*60)+  H_Timer02MinValue;
 	updateSetData=1;
 }
 
