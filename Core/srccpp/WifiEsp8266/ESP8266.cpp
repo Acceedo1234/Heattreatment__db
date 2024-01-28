@@ -214,7 +214,7 @@ void ESP8266::Send_WifiCmd()
 	set_duration_seq2 = (H_Timer02MinValue%10)+((H_Timer02MinValue/10)*10)+((H_Timer02HrValue%10)*100)+((H_Timer02HrValue/10)*1000);
 	remaining_duration_seq1 =(seq1_remaining_time_min%10)+((seq1_remaining_time_min/10)*10)+((seq1_remaining_time_Hr%10)*100)+((seq1_remaining_time_Hr/10)*1000);
 	remaining_duration_seq2 =(seq2_remaining_time_min%10)+((seq2_remaining_time_min/10)*10)+((seq2_remaining_time_Hr%10)*100)+((seq2_remaining_time_Hr/10)*1000);
-	lenOfURl = sprintf(PostUrl_CharFormat,"GET /set_temp?u=4&p=%d&tm=%d&tl=%d&th=%d&hr=%d"
+	lenOfURl = sprintf(PostUrl_CharFormat,"GET /set_temp?u=4&p=%d&tm=%d&tl=%d&th=%d&hr=%d&"
 				"h=%d&lr=%d&l=%d&hrt=%04d&ht=%04d%&lrt=%04d&lt=%04d&rv=%04d&bv=%04d&yv=%d&rc=%03d"
 				"&bc=%d&yc=%d&k=%d&x=%02d\r\nHost:usm4-ht.acceedo.in:9012\r\n\r\n",
 				ProcessId_Value,act_temperature_c1,act_temperature_c2,act_temperature_c3,
@@ -244,7 +244,7 @@ void ESP8266::Send_WifiCmd()
 		set_duration_seq2 = (H_Timer02MinValue%10)+((H_Timer02MinValue/10)*10)+((H_Timer02HrValue%10)*100)+((H_Timer02HrValue/10)*1000);
 		remaining_duration_seq1 =(seq1_remaining_time_min%10)+((seq1_remaining_time_min/10)*10)+((seq1_remaining_time_Hr%10)*100)+((seq1_remaining_time_Hr/10)*1000);
 		remaining_duration_seq2 =(seq2_remaining_time_min%10)+((seq2_remaining_time_min/10)*10)+((seq2_remaining_time_Hr%10)*100)+((seq2_remaining_time_Hr/10)*1000);
-	lenOfURl = sprintf(PostUrl_CharFormat,"GET /set_temp?u=4&p=%d&tm=%d&tl=%d&th=%d&hr=%d"
+	lenOfURl = sprintf(PostUrl_CharFormat,"GET /set_temp?u=4&p=%d&tm=%d&tl=%d&th=%d&hr=%d&"
 						"h=%d&lr=%d&l=%d&hrt=%04d&ht=%04d%&lrt=%04d&lt=%04d&rv=%04d&bv=%04d&yv=%d&rc=%03d"
 						"&bc=%d&yc=%d&k=%d&x=%02d\r\nHost:usm4-ht.acceedo.in:9012\r\n\r\n",
 						ProcessId_Value,act_temperature_c1,act_temperature_c2,act_temperature_c3,
