@@ -28,7 +28,7 @@ public:
 	uint8_t _u16ReadQty;
 	uint16_t u16CRC;
 	uint16_t m_settemperature;
-
+	uint16_t m_setTime;
 	uint8_t u8ModbusRegister[8];
 private:
 	uint8_t mTemperatureSensorId=1;

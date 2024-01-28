@@ -58,6 +58,9 @@ uint8_t H_Timer01HrValue,H_Timer01MinValue,H_Timer02HrValue,H_Timer02MinValue;
 uint16_t ProcessTotalMin1,ProcessTotalMin2;
 uint16_t Rise_Sequence1_temp,Rise_Sequence2_temp;
 uint8_t Rise_Sequence1_Hour,Rise_Sequence1_Minute,Rise_Sequence2_Hour,Rise_Sequence2_Minute;
+uint16_t Temp_Rising_Reference;
+uint8_t TimeReference_Hr,TimeReference_Min,Time_Rising_Ref_Hr,Time_Rising_Ref_Min;
+
 
 Heattreatment::Heattreatment() {
 	// TODO Auto-generated constructor stub
@@ -233,6 +236,11 @@ void Heattreatment::stateMachineProcessControl(void){
 		break;
 		case 22:
 				temperature_reference = Seq1temperature;
+				Temp_Rising_Reference   = Rise_Sequence1_temp;
+				TimeReference_Hr		= (unsigned char)H_Timer01HrValue;
+				TimeReference_Min		= (unsigned char)H_Timer01MinValue;
+				Time_Rising_Ref_Hr		= (unsigned char)Rise_Sequence1_Hour;
+				Time_Rising_Ref_Min		= (unsigned char)Rise_Sequence1_Minute;
 				m_temeperatureUpperBound = Seq1temperature+3;
 				m_temperatureLowerBound  = Seq1temperature-3;
 				if((act_temperature_c1 >= m_temperatureLowerBound)&&(act_temperature_c1 <= m_temeperatureUpperBound)
@@ -249,6 +257,11 @@ void Heattreatment::stateMachineProcessControl(void){
 		break;
 		case 23:
 			temperature_reference = Seq1temperature;
+			Temp_Rising_Reference   = Rise_Sequence1_temp;
+			TimeReference_Hr		= (unsigned char)H_Timer01HrValue;
+			TimeReference_Min		= (unsigned char)H_Timer01MinValue;
+			Time_Rising_Ref_Hr		= (unsigned char)Rise_Sequence1_Hour;
+			Time_Rising_Ref_Min		= (unsigned char)Rise_Sequence1_Minute;
 			m_temeperatureUpperBound = Seq1temperature+5;
 			m_temperatureLowerBound  = Seq1temperature-5;
 			if(!start_process_control_timer)
@@ -280,6 +293,11 @@ void Heattreatment::stateMachineProcessControl(void){
 		 break;
 		case 24:
 				temperature_reference = Seq2temperature;
+				Temp_Rising_Reference   = Rise_Sequence2_temp;
+				TimeReference_Hr		= (unsigned char)H_Timer02HrValue;
+				TimeReference_Min		= (unsigned char)H_Timer02MinValue;
+				Time_Rising_Ref_Hr		= (unsigned char)Rise_Sequence2_Hour;
+				Time_Rising_Ref_Min		= (unsigned char)Rise_Sequence2_Minute;
 				m_temeperatureUpperBound = Seq2temperature+3;
 				m_temperatureLowerBound  = Seq2temperature-3;
 				if((act_temperature_c1 >= m_temperatureLowerBound)&&(act_temperature_c1 <= m_temeperatureUpperBound)
@@ -296,6 +314,11 @@ void Heattreatment::stateMachineProcessControl(void){
 		break;
 		case 25:
 				temperature_reference = Seq2temperature;
+				Temp_Rising_Reference   = Rise_Sequence2_temp;
+				TimeReference_Hr		= (unsigned char)H_Timer02HrValue;
+				TimeReference_Min		= (unsigned char)H_Timer02MinValue;
+				Time_Rising_Ref_Hr		= (unsigned char)Rise_Sequence2_Hour;
+				Time_Rising_Ref_Min		= (unsigned char)Rise_Sequence2_Minute;
 				m_temeperatureUpperBound = Seq2temperature+5;
 				m_temperatureLowerBound  = Seq2temperature-5;
 				if(!start_process_control_timer)

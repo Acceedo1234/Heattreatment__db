@@ -67,6 +67,5 @@ void cppMain()
 			esp8266Inst.run();
 			heattreatmentInst.sim();
 		}
-		//ESPRXDataSeg();
 	}
 }
