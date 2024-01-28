@@ -71,7 +71,47 @@ Heattreatment::~Heattreatment() {
 void Heattreatment::run()
 {
 	stateMachineProcessControl();
+	specialHandler();
 }
+
+void Heattreatment::sim()
+{
+	if((SEQMONITOR ==22)||(SEQMONITOR==23))
+		{
+			if(Data1_RxData  >=  Seq1temperature)
+			{
+
+			}
+			else
+			{
+			   Data1_RxData=Data1_RxData+1;
+			}
+		}
+		else if((SEQMONITOR ==24)||(SEQMONITOR==25))
+		{
+			if(Data1_RxData  >  Seq2temperature)
+			{
+			   Data1_RxData=Data1_RxData-1;
+			}
+			else if(Data1_RxData  <  Seq2temperature)
+			{
+			   Data1_RxData=Data1_RxData+1;
+			}
+			else
+			{
+			   Data1_RxData=  Seq2temperature*1;
+			}
+		}
+		else
+		{
+		   Data1_RxData=32;
+		}
+		act_temperature_c1 = Data1_RxData;
+		act_temperature_c2 = Data1_RxData;
+		act_temperature_c3 = Data1_RxData;
+		act_temperature_c4 = Data1_RxData;
+}
+
 
 void Heattreatment::stateMachineProcessControl(void){
 	switch(SEQMONITOR)
@@ -295,5 +335,75 @@ void Heattreatment::stateMachineProcessControl(void){
 	if((IDGen_Skip_Http==10)&&(SEQMONITOR!=26))
 	{
 		SEQMONITOR = 26;
+	}
+}
+
+void Heattreatment::specialHandler(void)
+{
+ if(Status_Http!=11){return;}
+	if(Status_Http==11)
+	{
+		if(Temperature_High_Http!=0)
+		{
+			if(Seq1temperature!=Temperature_High_Http)
+			{
+				Seq1temperature= Temperature_High_Http;
+				updateSetData=1;
+			}
+		}
+		if(Temperature_Low_Http!=0)
+		{
+			if(Seq2temperature!=Temperature_Low_Http)
+			{
+				Seq2temperature= Temperature_Low_Http;
+				updateSetData=1;
+			}
+		}
+		if(H_Timer01HrValue!=Sequence1_hour_http)
+		{
+			H_Timer01HrValue= Sequence1_hour_http;
+			ProcessTotalMin1 	=  (H_Timer01HrValue*60)+  H_Timer01MinValue;
+			updateSetData=1;
+		}
+		if(H_Timer01MinValue!=Sequence1_minute_http)
+		{
+			H_Timer01MinValue= Sequence1_minute_http;
+			ProcessTotalMin1 	=  (H_Timer01HrValue*60)+  H_Timer01MinValue;
+			updateSetData=1;
+		}
+		if(H_Timer02HrValue!=Sequence2_hour_http)
+		{
+			H_Timer02HrValue= Sequence2_hour_http;
+			ProcessTotalMin2   =  (H_Timer02HrValue*60)+  H_Timer02MinValue;
+			updateSetData=1;
+		}
+		if(H_Timer02MinValue!=Sequence2_minute_http)
+		{
+			H_Timer02MinValue= Sequence2_minute_http;
+			ProcessTotalMin2   =  (H_Timer02HrValue*60)+  H_Timer02MinValue;
+			updateSetData=1;
+		}
+		if(R_Sequence1_hour_http!=   Rise_Sequence1_Hour)
+		{
+			Rise_Sequence1_Hour = R_Sequence1_hour_http;
+			updateSetData=1;
+		}
+		if(R_Sequence1_minute_http!=   Rise_Sequence1_Minute)
+		{
+			Rise_Sequence1_Hour = R_Sequence1_minute_http;
+			updateSetData=1;
+		}
+
+		if(R_Sequence2_hour_http!=   Rise_Sequence2_Hour)
+		{
+			Rise_Sequence2_Hour = R_Sequence2_hour_http;
+			updateSetData=1;
+		}
+
+		if(R_Sequence2_minute_http!=   Rise_Sequence2_Minute)
+		{
+			Rise_Sequence2_Minute = R_Sequence2_minute_http;
+			updateSetData=1;
+		}
 	}
 }

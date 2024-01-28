@@ -65,6 +65,7 @@ void cppMain()
 			Flag1Second=0;
 			displayRoutineInst.run();
 			esp8266Inst.run();
+			heattreatmentInst.sim();
 		}
 		//ESPRXDataSeg();
 	}

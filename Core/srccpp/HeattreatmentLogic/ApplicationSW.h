@@ -16,7 +16,9 @@ public:
 	Heattreatment();
 	virtual ~Heattreatment();
 	void run();
+	void sim();
 	void stateMachineProcessControl();
+	void specialHandler();
 
 
 private:
@@ -24,6 +26,7 @@ private:
 	GPIO_PinState m_simEndProcess;
 	uint16_t m_temeperatureUpperBound;
 	uint16_t m_temperatureLowerBound;
+	uint16_t Data1_RxData=0;
 };
 
 #endif /* SRCCPP_HEATTREATMENTLOGIC_APPLICATIONSW_H_ */
