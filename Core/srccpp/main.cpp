@@ -38,11 +38,10 @@ void cppMain()
 	OfflineStorage offlineStorageInst;
 	ESP8266 esp8266Inst;
 //	SHIFT shiftInst;
-
-	displayRoutineInst.Init();
 	offlineStorageInst.ReadOfflinedataInit();
+	displayRoutineInst.Init();
 	esp8266Inst.Init();
-	ReadOnlineData();
+
 	TxSeqComplete=1;
 
 

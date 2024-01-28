@@ -42,6 +42,10 @@ uint8_t SEQMONITOR_K1;
 uint16_t ProcessId_Value_K1;
 uint16_t seq1_count_inc_K1,seq2_count_inc_K1;
 
+uint8_t m_writeFlashBuf[20];
+uint8_t m_readFlashBuf[20];
+uint8_t m_readFlashheatBuf[20];
+
 
 
 OfflineStorage::OfflineStorage() {
@@ -73,31 +77,30 @@ void OfflineStorage::m_writeHeattreatmentData(){
 	if((ProcessId_Value != ProcessId_Value_K1)||(updateSetData==1)||
 			(SEQMONITOR != SEQMONITOR_K1))
 	{
-		m_writeFlashBuf[0] = (uint8_t)(ProcessId_Value && 0xff);
-		m_writeFlashBuf[1] = (uint8_t)(ProcessId_Value>>8) && 0xff;
+		m_writeFlashBuf[0] = (uint8_t)(ProcessId_Value & 0xff);
+		m_writeFlashBuf[1] = (uint8_t)(ProcessId_Value>>8) & 0xff;
 		ProcessId_Value_K1 = ProcessId_Value;
 
-		m_writeFlashBuf[2] = (uint8_t)(Seq1temperature && 0xff);
-		m_writeFlashBuf[3] = (uint8_t)(Seq1temperature>>8) && 0xff;
-		m_writeFlashBuf[4] = (uint8_t)(Seq2temperature && 0xff);
-		m_writeFlashBuf[5] = (uint8_t)(Seq2temperature>>8) && 0xff;
+		m_writeFlashBuf[2] = (uint8_t)(Seq1temperature & 0xff);
+		m_writeFlashBuf[3] = (uint8_t)(Seq1temperature>>8) & 0xff;
+		m_writeFlashBuf[4] = (uint8_t)(Seq2temperature & 0xff);
+		m_writeFlashBuf[5] = (uint8_t)(Seq2temperature>>8) & 0xff;
 		m_writeFlashBuf[6] = (uint8_t)(H_Timer01HrValue);
 		m_writeFlashBuf[7] = (uint8_t)(H_Timer01MinValue);
 		m_writeFlashBuf[8] = (uint8_t)(H_Timer02HrValue);
 		m_writeFlashBuf[9] = (uint8_t)(H_Timer02MinValue);
-		m_writeFlashBuf[10] = (uint8_t)(Rise_Sequence1_temp && 0xff);
-		m_writeFlashBuf[11] = (uint8_t)(Rise_Sequence1_temp>>8) && 0xff;
-		m_writeFlashBuf[12] = (uint8_t)(Rise_Sequence2_temp && 0xff);
-		m_writeFlashBuf[13] = (uint8_t)(Rise_Sequence2_temp>>8) && 0xff;
+		m_writeFlashBuf[10] = (uint8_t)(Rise_Sequence1_temp & 0xff);
+		m_writeFlashBuf[11] = (uint8_t)(Rise_Sequence1_temp>>8) & 0xff;
+		m_writeFlashBuf[12] = (uint8_t)(Rise_Sequence2_temp & 0xff);
+		m_writeFlashBuf[13] = (uint8_t)(Rise_Sequence2_temp>>8) & 0xff;
 		m_writeFlashBuf[14] = (uint8_t)(Rise_Sequence1_Hour);
 		m_writeFlashBuf[15] = (uint8_t)(Rise_Sequence1_Minute);
 		m_writeFlashBuf[16] = (uint8_t)(Rise_Sequence2_Hour);
 		m_writeFlashBuf[17] = (uint8_t)(Rise_Sequence2_Minute);
-		SEQMONITOR_K1 = SEQMONITOR;
 		m_writeFlashBuf[18] = SEQMONITOR;
-
+		SEQMONITOR_K1 = SEQMONITOR;
 		updateSetData	= 0;
-		W25qxx_EraseSector(1);
+		W25qxx_EraseSector(0);
 		//W25qxx_WriteSector(m_writeFlashBuf,1,0,19);
 		W25qxx_WriteSector(m_writeFlashBuf,0,0,19);
 
@@ -106,10 +109,10 @@ void OfflineStorage::m_writeHeattreatmentData(){
 
 void OfflineStorage::m_writeCountinc(){
 	if((seq1_count_inc_K1 != seq1_count_inc) ||(seq2_count_inc_K1 != seq2_count_inc )){
-		m_writeFlashBuf[0] = (uint8_t)(seq1_count_inc && 0xff);
-		m_writeFlashBuf[1] = (uint8_t)(seq1_count_inc>>8) && 0xff;
-		m_writeFlashBuf[2] = (uint8_t)(seq2_count_inc && 0xff);
-		m_writeFlashBuf[3] = (uint8_t)(seq2_count_inc>>8) && 0xff;
+		m_writeFlashBuf[0] = (uint8_t)(seq1_count_inc & 0xff);
+		m_writeFlashBuf[1] = (uint8_t)(seq1_count_inc>>8) & 0xff;
+		m_writeFlashBuf[2] = (uint8_t)(seq2_count_inc & 0xff);
+		m_writeFlashBuf[3] = (uint8_t)(seq2_count_inc>>8) & 0xff;
 		seq1_count_inc_K1 = seq1_count_inc;
 		seq2_count_inc_K1 = seq2_count_inc;
 
@@ -121,8 +124,8 @@ void OfflineStorage::m_writeCountinc(){
 void OfflineStorage::m_quenchCount(){
 	if(Write_memory_Once==0){return;}
 		Write_memory_Once=0;
-		m_writeFlashBuf[0] = (uint8_t)(Quenching_Seconds_Cont && 0xff);
-		m_writeFlashBuf[1] = (uint8_t)(Quenching_Seconds_Cont>>8) && 0xff;
+		m_writeFlashBuf[0] = (uint8_t)(Quenching_Seconds_Cont & 0xff);
+		m_writeFlashBuf[1] = (uint8_t)(Quenching_Seconds_Cont>>8) & 0xff;
 		W25qxx_EraseSector(3);
 		W25qxx_WriteSector(m_writeFlashBuf,3,0,2);
 }
@@ -164,6 +167,7 @@ void OfflineStorage::m_readHeattreatmentData(){
 
 	ProcessTotalMin1 	=  (H_Timer01HrValue*60)+  H_Timer01MinValue;
 	ProcessTotalMin1 	=  (H_Timer01HrValue*60)+  H_Timer01MinValue;
+	updateSetData=1;
 }
 
 void OfflineStorage::m_readCountinc(){
