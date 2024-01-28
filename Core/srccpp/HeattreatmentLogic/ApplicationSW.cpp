@@ -146,6 +146,8 @@ void Heattreatment::stateMachineProcessControl(void){
 		break;
 		case 21:
 				ProcessId_Value = ProcessId_Value+1;
+				seq1_count_inc  = 0;
+				seq2_count_inc  = 0;
 				SEQMONITOR	= 100; //wait for server ack
 				status_to_server= 1;
 		break;

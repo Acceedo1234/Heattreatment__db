@@ -7,6 +7,7 @@
 
 #include "Modbusrtu.h"
 #include "Modbus_types.h"
+#include "baselib.h"
 
 extern uint16_t temperature_reference;
 constexpr uint16_t Step1_Temperature_Add= 0x01;
@@ -14,12 +15,21 @@ constexpr uint16_t Step1_Time_Add= 4097;
 constexpr uint16_t Step2_Temperature_Add= 4099;
 constexpr uint16_t Step2_Time_Add= 4100;
 
+constexpr uint8_t START_BYTE_1=0x5A;
+constexpr uint8_t START_BYTE_2=0xA5;
+constexpr uint8_t multipleWriteRequestH = 0x0B;
+constexpr uint8_t multipleWriteRequestL = 0x82;
+constexpr uint8_t multipleReadRequestH = 0x04;
+constexpr uint8_t multipleReadRequestL = 0x83;
+
 constexpr uint8_t WaterTemperatureId=0x05;
 uint8_t TxSeqComplete;
 
 extern uint16_t Temp_Rising_Reference;
 extern uint8_t TimeReference_Hr,TimeReference_Min,Time_Rising_Ref_Hr,Time_Rising_Ref_Min;
 extern uint16_t temperature_reference;
+
+uint8_t Rx_Dwin_Point;
 Modbusrtu::Modbusrtu() {
 	// TODO Auto-generated constructor stub
 
@@ -164,4 +174,50 @@ uint16_t Modbusrtu::ASCChecksum(uint8_t *ASCSrc, uint8_t NoOfBytes)
 
 	}
 	return (CRCRegHigh << 8 | CRCRegLow );
+}
+
+/*Dwin frame*/
+void Modbusrtu::dwinFrame(void)
+{
+	switch(Cntid_dwin)
+	{
+	case 0:
+		u8ModbusRegisterdwin[0] = START_BYTE_1;
+		u8ModbusRegisterdwin[1] = START_BYTE_2;
+		u8ModbusRegisterdwin[2] = multipleWriteRequestH;
+		u8ModbusRegisterdwin[3] = multipleWriteRequestL;
+		u8ModbusRegisterdwin[4] = 0x20;
+		u8ModbusRegisterdwin[5] = 0x00;
+		u8ModbusRegisterdwin[6] = highByte(100);
+		u8ModbusRegisterdwin[7] = lowByte(100);
+		u8ModbusRegisterdwin[8] = highByte(200);
+		u8ModbusRegisterdwin[9] = lowByte(200);
+		u8ModbusRegisterdwin[10] = 0;
+		u8ModbusRegisterdwin[11] = 0;
+		u8ModbusRegisterdwin[12] = 0;
+		u8ModbusRegisterdwin[13] = 0;
+		u8ModbusRegisterdwin[14] = 0;
+		u8ModbusRegisterdwin[15] = 0;
+
+		noOfDataDwin=16;
+		Cntid_dwin=1;
+	break;
+	case 1:
+			u8ModbusRegisterdwin[0] = START_BYTE_1;
+			u8ModbusRegisterdwin[1] = START_BYTE_2;
+			u8ModbusRegisterdwin[2] = multipleReadRequestH;
+			u8ModbusRegisterdwin[3] = multipleReadRequestL;
+			u8ModbusRegisterdwin[4] = 0x30;
+			u8ModbusRegisterdwin[5] = 0x00;
+			u8ModbusRegisterdwin[6] = 0x16;
+			Rx_Dwin_Point=0;
+			noOfDataDwin=7;
+			Cntid_dwin=0;
+		break;
+		default:
+			Cntid_dwin=0;
+		break;
+		}
+		//out_read_rxint_set.Noofbytesrx = (_u16ReadQty*2)+5;
+		HAL_UART_Transmit_IT(&huart2,u8ModbusRegisterdwin,noOfDataDwin);
 }

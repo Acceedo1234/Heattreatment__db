@@ -1,0 +1,56 @@
+Board to Hmi
+Temp1 live-2000
+Temp2 live-2001
+Temp3 live-2002
+Temp4 live-2003
+
+Temp1 set-2004
+Temp2 set-2005
+Temp3 set-2006
+Temp4 set-2007
+
+Wifi not live 2008(0)
+Wifi live 2008(1)
+
+
+TImer1 set hour - 2009
+TImer1 set Min - 200A
+
+TImer2 set hour - 200B
+TImer3 set Min - 200C
+
+HOlding time 1 - 200D(1)
+HOlding time 2 - 200D(2)
+
+Timer not start - 200E(1)
+
+Timer live hour - 200F
+TImer live min	- 2010
+
+
+board ip : 2011: 2012: 2013: 2014
+Sub net: 2015: 2016: 2017: 2018
+gateway: 2019: 201A: 201B: 201C
+mac add : 201D: 201E: 201F: 2020: 2021: 2022
+
+
+HMI to Board
+
+Server add : 3000 - 300A
+
+Port No: 300B
+
+Machine no: 300C
+
+Batch reset on : 300D (0)
+Batch reset off: 300D (1) 
+
+WIfi user name : 300E - 3015
+Password : 3016
+
+
+
+
+
+
+

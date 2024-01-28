@@ -63,9 +63,9 @@ void cppMain()
 		if(Flag1Second)
 		{
 			Flag1Second=0;
-			displayRoutineInst.run();
 			esp8266Inst.run();
 			heattreatmentInst.sim();
+			ModbusInst.dwinFrame();
 		}
 	}
 }

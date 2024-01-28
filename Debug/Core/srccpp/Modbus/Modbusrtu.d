@@ -32,7 +32,8 @@ Core/srccpp/Modbus/Modbusrtu.o: ../Core/srccpp/Modbus/Modbusrtu.cpp \
  ../Drivers/STM32L4xx_HAL_Driver/Inc/stm32l4xx_hal_tim_ex.h \
  ../Drivers/STM32L4xx_HAL_Driver/Inc/stm32l4xx_hal_uart.h \
  ../Drivers/STM32L4xx_HAL_Driver/Inc/stm32l4xx_hal_uart_ex.h \
- ../Core/srccpp/Modbus/Modbus_types.h
+ ../Core/srccpp/Modbus/Modbus_types.h \
+ D:/SourceTree/Heattreatment/Core/srccpp/Common/baselib.h
 ../Core/srccpp/Modbus/Modbusrtu.h:
 ../Core/Inc/main.h:
 ../Drivers/STM32L4xx_HAL_Driver/Inc/stm32l4xx_hal.h:
@@ -68,3 +69,4 @@ Core/srccpp/Modbus/Modbusrtu.o: ../Core/srccpp/Modbus/Modbusrtu.cpp \
 ../Drivers/STM32L4xx_HAL_Driver/Inc/stm32l4xx_hal_uart.h:
 ../Drivers/STM32L4xx_HAL_Driver/Inc/stm32l4xx_hal_uart_ex.h:
 ../Core/srccpp/Modbus/Modbus_types.h:
+D:/SourceTree/Heattreatment/Core/srccpp/Common/baselib.h:
