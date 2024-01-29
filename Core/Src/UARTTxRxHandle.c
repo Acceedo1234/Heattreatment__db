@@ -8,6 +8,7 @@
 
 extern UART_HandleTypeDef hlpuart1;
 extern UART_HandleTypeDef huart1;
+extern UART_HandleTypeDef huart2;
 extern uint8_t rxTempBuff[5];
 extern uint8_t u8rxbuf[16];
 uint8_t checkbuff[300];
@@ -15,15 +16,19 @@ uint8_t refinc;
 uint8_t rx_msb_data,rx_lsb_data,rx_msb_h_data,rx_seq,rx_meter_id;
 uint8_t rx_seq_1;
 uint8_t rx_msb_data_w,rx_lsb_data_w;
-
+uint8_t u8rxdwinbuf[3];
+uint8_t DwinDatabuffer[255];
+uint8_t NoOfDwinRxdata,Rx_Dwin_Data_Buff_Point,Rx_Dwin_Complete;
 uint16_t Dye_Temperature;
 uint16_t Connector_Temperature;
 extern uint16_t act_temperature_c1,act_temperature_c2,act_temperature_c3,act_temperature_c4;
 uint16_t water_temperature;
+uint8_t Dwinseq;
 
 
 extern uint8_t Rxseqdecoder;
 extern void ESPRxDecoder(unsigned char Rxwifi_data,unsigned char Rxseqdecoder);
+void DwinFrameDecode(uint8_t Dwindatarx);
 
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 {
@@ -100,7 +105,74 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 		}
 		HAL_UART_Receive_IT(&huart1,u8rxbuf,1);
 	}
+
+	if(huart == &huart2)
+	{
+		DwinFrameDecode(u8rxdwinbuf[0]);
+		HAL_UART_Receive_IT(&huart2,u8rxdwinbuf,1);
+	}
 }
 
+void DwinFrameDecode(uint8_t Dwindatarx){
 
+	switch(Dwinseq)
+	{
+		case 0:
+			if(Dwindatarx == 0x5A){
+				Dwinseq=1;
+			}
+			else
+			{
+				Dwinseq=0;
+			}
+		break;
+		case 1:
+			if(Dwindatarx == 0xA5){
+				Dwinseq=2;
+			}
+			else
+			{
+				Dwinseq=0;
+			}
+		break;
+		case 2:
+			NoOfDwinRxdata = Dwindatarx-3;
+			Dwinseq=3;
+		break;
+		case 3:
+			Dwinseq=4;
+		break;
+		case 4:
+			if(Dwindatarx == 0x30){
+				Dwinseq=5;
+			}
+			else
+			{
+				Dwinseq=0;
+			}
+		break;
+		case 5:
+			if(Dwindatarx == 0x0D){
+				Dwinseq=6;
+				Rx_Dwin_Data_Buff_Point=0;
+			}
+			else
+			{
+				Dwinseq=0;
+			}
+		break;
+		case 6:
+				DwinDatabuffer[Rx_Dwin_Data_Buff_Point]=Dwindatarx;
+				NoOfDwinRxdata= NoOfDwinRxdata-1;
+				Rx_Dwin_Data_Buff_Point = Rx_Dwin_Data_Buff_Point+1;
+				if(NoOfDwinRxdata == 0){
+					Dwinseq=0;
+					Rx_Dwin_Complete=1;
+				}
+			Dwinseq=0;
+		break;
+		default:
+		break;
+	}
+}
 
