@@ -45,6 +45,9 @@ extern uint16_t Rise_Sequence1_temp,Rise_Sequence2_temp;
 extern uint8_t Rise_Sequence1_Hour,Rise_Sequence1_Minute,Rise_Sequence2_Hour,Rise_Sequence2_Minute;
 extern uint8_t H_Timer01HrValue,H_Timer01MinValue,H_Timer02HrValue,H_Timer02MinValue;
 extern uint8_t R_Sequence2_hour_http,R_Sequence2_minute_http,Sequence2_hour_http,Sequence2_minute_http;
+extern uint8_t noOfByteUsername,noOfBytePsw;
+extern uint8_t wifiUsername[15],wifiPassword[15];
+
 
 ESP8266::ESP8266() {
 	// TODO Auto-generated constructor stub
@@ -139,11 +142,28 @@ void ESP8266::Send_WifiCmd()
 	}
 	break;
 	case 30:   //CWJAP	   //userid-9digit,psw 8digit  //userid-5digit,psw 8digit
-	NoOfdata_byte=41;//32;
+	//NoOfdata_byte=41;//32;
 	Rxseqdecoder=2;
 	wifi_command=41;
 	Timerdelay=0;
 	bufferptr=0;
+	for(uint8_t i=0;i<=9;i++){
+		CMDATCWJAPUsernamePsw[i]= CMDATCWJAPUsernamePswB1[i];
+	}
+	for(uint8_t i=10,j=0;j<=noOfByteUsername;i++,j++){
+		CMDATCWJAPUsernamePsw[i]= wifiUsername[j];
+	}
+	for(uint8_t i=(10+noOfByteUsername),j=0;j<=2;i++,j++){
+		CMDATCWJAPUsernamePsw[i]= CMDATCWJAPUsernamePswB2[j];
+	}
+	for(uint8_t i=(10+noOfByteUsername+3),j=0;j<=noOfBytePsw;i++,j++){
+		CMDATCWJAPUsernamePsw[i]= wifiPassword[j];
+	}
+	for(uint8_t i=(10+noOfByteUsername+3+noOfBytePsw),j=0;j<=2;i++,j++){
+		CMDATCWJAPUsernamePsw[i]= CMDATCWJAPUsernamePswB3[j];
+	}
+	NoOfdata_byte = 10+noOfByteUsername+3+noOfBytePsw+3;
+	//CMDATCWJAPUsernamePsw
 	HAL_UART_Transmit_IT(&hlpuart1,CMDATCWJAPUsernamePsw,NoOfdata_byte);
 	break;		   //add retry
 	case 41:	   //resend if o replay

@@ -29,6 +29,8 @@
  uint16_t Read_Quench_IP_Start,Read_Quench_IP_Stop,Quenching_Seconds_Cont;
  uint8_t Seccount1,Seccount2;
 
+ GPIO_PinState InputStart_R,InputStop_R;
+
  extern uint16_t ProcessTotalMin1,ProcessTotalMin2;
 
  void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
@@ -83,15 +85,19 @@
 		if(++CountAT_Quench > 9)
 		{
 			CountAT_Quench=0;
-			Read_Quench_IP_Start = 0;//(IO1PIN & (1<<25));
-			Read_Quench_IP_Stop  = 0;// (IO1PIN &(1<<24));
-
+			InputStart_R =  HAL_GPIO_ReadPin(GPIOC,InputMachine2_Pin);
+			InputStop_R  =  HAL_GPIO_ReadPin(GPIOA,InputMachine3_Pin);
+			if(InputStart_R==GPIO_PIN_RESET){Read_Quench_IP_Start=0;}
+			else{Read_Quench_IP_Start=1;}
+			if(InputStop_R==GPIO_PIN_RESET){Read_Quench_IP_Stop=0;}
+			else{Read_Quench_IP_Stop=1;}
 			if((NewQuenchingReq)
 				&&(!Read_Quench_IP_Start)
 				&&(status_to_server != 30)
 				&&(Status_Quench_Duration==0))
 			{
 				NewQuenchingReq=0;
+				Write_memory_Once=1;
 				Status_Quench_Duration  = 1;
 				Quenching_Seconds_Cont = 0;
 			}
@@ -115,8 +121,7 @@
 				Status_Quench_Duration=0;
 				Write_memory_Once=1;
 			}
-		 }
-
+		}
 	}
- 
+
  }

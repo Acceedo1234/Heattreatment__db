@@ -160,7 +160,7 @@ int main(void)
   //rtc_set_time(13,14,30);
   //rtc_set_date(2,20,2,23);
   HAL_UART_Receive_IT(&huart1,u8rxbuf,1);
-  HAL_UART_Receive_IT(&huart1,u8rxdwinbuf,1);
+  HAL_UART_Receive_IT(&huart2,u8rxdwinbuf,1);
   HAL_UART_Receive_IT(&hlpuart1,rxTempBuff,1);
   while (1)
   {

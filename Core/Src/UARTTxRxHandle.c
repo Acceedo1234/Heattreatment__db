@@ -24,6 +24,7 @@ uint16_t Connector_Temperature;
 extern uint16_t act_temperature_c1,act_temperature_c2,act_temperature_c3,act_temperature_c4;
 uint16_t water_temperature;
 uint8_t Dwinseq;
+uint8_t check[210],trackpoint;
 
 
 extern uint8_t Rxseqdecoder;
@@ -109,6 +110,8 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 	if(huart == &huart2)
 	{
 		DwinFrameDecode(u8rxdwinbuf[0]);
+		check[trackpoint]=u8rxdwinbuf[0];
+		if(++trackpoint>200){trackpoint=0;}
 		HAL_UART_Receive_IT(&huart2,u8rxdwinbuf,1);
 	}
 }
@@ -169,7 +172,6 @@ void DwinFrameDecode(uint8_t Dwindatarx){
 					Dwinseq=0;
 					Rx_Dwin_Complete=1;
 				}
-			Dwinseq=0;
 		break;
 		default:
 		break;

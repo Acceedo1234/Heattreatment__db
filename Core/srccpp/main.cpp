@@ -44,21 +44,19 @@ void cppMain()
 
 	TxSeqComplete=1;
 
-
 	while(1)
 	{
-
 		if(Flag1MS)
 		{
 			Flag1MS=0;
 			heattreatmentInst.run();
-
 		}
 		if(Flag100milliSeconds)
 		{
 			Flag100milliSeconds=0;
 			offlineStorageInst.run();
 			ModbusInst.ModbusReadTransaction();
+			ModbusInst.dwinDecoder();
 		}
 		if(Flag1Second)
 		{

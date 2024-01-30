@@ -32,10 +32,19 @@ extern uint8_t H_Timer01HrValue,H_Timer01MinValue,H_Timer02HrValue,H_Timer02MinV
 extern uint8_t Rise_Sequence1_Hour,Rise_Sequence1_Minute,Rise_Sequence2_Hour,Rise_Sequence2_Minute;
 extern uint8_t start_process_control_timer;
 extern uint8_t seq1_remaining_time_Hr,seq1_remaining_time_min,seq2_remaining_time_Hr,seq2_remaining_time_min;
+extern uint8_t Rx_Dwin_Complete;
+extern uint8_t Dwinseq;
+extern uint8_t DwinDatabuffer[255];
 
 uint8_t TxSeqComplete;
 uint8_t ProcRunning,Idle_State;
-uint8_t Rx_Dwin_Point;
+uint8_t indexStartUsername,indexStartPsw;
+uint8_t noOfByteUsername,noOfBytePsw;
+uint8_t wifiUsername[15],wifiPassword[15];
+uint8_t noOfByteUsernameK1,noOfBytePswK1;
+uint8_t wifiUsernameK1[15],wifiPasswordK1[15];
+uint8_t UpdateMemoryForWfi;
+
 
 Modbusrtu::Modbusrtu() {
 	// TODO Auto-generated constructor stub
@@ -251,7 +260,7 @@ void Modbusrtu::dwinFrame(void)
 		u8ModbusRegisterdwin[39] = lowByte(0);}
 
 
-		noOfDataDwin=42;
+		noOfDataDwin=40;
 		Cntid_dwin=1;
 	break;
 	case 1:
@@ -260,11 +269,11 @@ void Modbusrtu::dwinFrame(void)
 			u8ModbusRegisterdwin[2] = multipleReadRequestH;
 			u8ModbusRegisterdwin[3] = multipleReadRequestL;
 			u8ModbusRegisterdwin[4] = 0x30;
-			u8ModbusRegisterdwin[5] = 0x00;
-			u8ModbusRegisterdwin[6] = 0x32;
-			Rx_Dwin_Point=0;
+			u8ModbusRegisterdwin[5] = 0x0D;
+			u8ModbusRegisterdwin[6] = 0x40;
+			Dwinseq=0;
 			noOfDataDwin=7;
-			Cntid_dwin=0;
+			Cntid_dwin=1;
 		break;
 		default:
 			Cntid_dwin=0;
@@ -273,3 +282,70 @@ void Modbusrtu::dwinFrame(void)
 		//out_read_rxint_set.Noofbytesrx = (_u16ReadQty*2)+5;
 		HAL_UART_Transmit_IT(&huart2,u8ModbusRegisterdwin,noOfDataDwin);
 }
+
+void Modbusrtu::dwinDecoder(void)
+{
+	if(!Rx_Dwin_Complete){return;}
+	Rx_Dwin_Complete=0;
+
+	for(uint8_t i=0;i<=255;i++)
+	{
+		if(DwinDatabuffer[i] == 0x5A)
+		{
+			indexStartUsername = i;
+			break;
+		}
+	}
+
+	noOfByteUsername = DwinDatabuffer[indexStartUsername+1];
+	for(uint8_t i=0;i<noOfByteUsername;i++){
+		wifiUsername[i] = DwinDatabuffer[(indexStartUsername+2)+i];
+	}
+
+	for(uint8_t i=(indexStartUsername+noOfByteUsername);i<=255;i++)
+	{
+		if(DwinDatabuffer[i] == 0x5A)
+		{
+			indexStartPsw = i;
+			break;
+		}
+	}
+
+	noOfBytePsw = DwinDatabuffer[indexStartPsw+1];
+	for(uint8_t i=0;i<noOfBytePsw;i++){
+		wifiPassword[i] = DwinDatabuffer[(indexStartPsw+2)+i];
+	}
+
+	if(noOfByteUsernameK1 != noOfByteUsername){
+		UpdateMemoryForWfi=1;
+	}
+	if(noOfBytePswK1 != noOfBytePsw){
+		UpdateMemoryForWfi=1;
+	}
+	for(uint8_t i=0;i<noOfByteUsername;i++)
+	{
+		if(wifiUsernameK1[i] != wifiUsername[i]){
+			UpdateMemoryForWfi=1;
+			break;
+		}
+	}
+	for(uint8_t i=0;i<noOfBytePsw;i++)
+	{
+		if(wifiPasswordK1[i] != wifiPassword[i]){
+			UpdateMemoryForWfi=1;
+			break;
+		}
+	}
+
+	if(UpdateMemoryForWfi==1){
+		noOfByteUsernameK1 = noOfByteUsername;
+		for(uint8_t i=0;i<noOfByteUsername;i++){
+			wifiUsernameK1[i] = wifiUsername[i];
+		}
+		noOfBytePswK1 = noOfBytePsw;
+		for(uint8_t i=0;i<noOfBytePsw;i++){
+			wifiPasswordK1[i] = wifiPassword[i];
+		}
+	}
+}
+

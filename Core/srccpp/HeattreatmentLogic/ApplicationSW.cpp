@@ -39,6 +39,7 @@ extern uint8_t Sequence1_hour_http,Sequence1_minute_http,R_Sequence1_hour_http,R
 extern uint8_t R_Sequence2_hour_http,R_Sequence2_minute_http,Sequence2_hour_http,Sequence2_minute_http;
 extern uint8_t TypeofProcess,No_of_temp_Controller,Type_of_temp_Controller,Type_of_powermeter;
 extern uint8_t Status_Http,IDGen_Skip_Http;
+extern uint8_t Write_memory_Once;
 
 
 uint16_t Seq1temperature;
@@ -130,8 +131,8 @@ void Heattreatment::stateMachineProcessControl(void){
 			}
 		break;
 		case 20:
-			//m_simEndProcess= HAL_GPIO_ReadPin(GPIOC,InputMachine1_Pin);
-			if((m_simEndProcess ==GPIO_PIN_SET )||(IDGen_Skip_Http==0x01))
+			m_simEndProcess= HAL_GPIO_ReadPin(GPIOC,InputMachine1_Pin);
+			if((m_simEndProcess ==GPIO_PIN_RESET )||(IDGen_Skip_Http==0x01))
 			{
 				SEQMONITOR=21;
 				status_to_server=1;
@@ -285,7 +286,7 @@ void Heattreatment::stateMachineProcessControl(void){
 				start_process_control_timer=0;
 				SEQMONITOR = 24;
 				NewQuenchingReq=1;
-
+				Write_memory_Once=1;
 			}
 			else{
 				SEQMONITOR = 23;

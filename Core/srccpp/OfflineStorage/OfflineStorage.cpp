@@ -37,16 +37,16 @@ extern uint16_t Rise_Sequence1_temp,Rise_Sequence2_temp;
 extern uint8_t H_Timer01HrValue,H_Timer01MinValue,H_Timer02HrValue,H_Timer02MinValue;
 extern uint8_t Rise_Sequence1_Hour,Rise_Sequence1_Minute,Rise_Sequence2_Hour,Rise_Sequence2_Minute;
 extern uint16_t ProcessTotalMin1,ProcessTotalMin2;
+extern uint8_t UpdateMemoryForWfi;
 /*check for change in data*/
 uint8_t SEQMONITOR_K1;
 uint16_t ProcessId_Value_K1;
 uint16_t seq1_count_inc_K1,seq2_count_inc_K1;
-
-uint8_t m_writeFlashBuf[20];
-uint8_t m_readFlashBuf[20];
-uint8_t m_readFlashheatBuf[20];
-
-
+extern uint8_t noOfByteUsername,noOfBytePsw;
+extern uint8_t wifiUsername[15],wifiPassword[15];
+extern uint8_t noOfByteUsernameK1,noOfBytePswK1;
+extern uint8_t wifiUsernameK1[15],wifiPasswordK1[15];
+extern uint8_t NewQuenchingReq;
 
 OfflineStorage::OfflineStorage() {
 	// TODO Auto-generated constructor stub
@@ -61,7 +61,8 @@ void OfflineStorage::run()
 {
 	m_writeHeattreatmentData();
 	m_writeCountinc();
-
+	m_writeWifidata();
+	m_quenchCount();
 }
 
 void OfflineStorage::m_writeSeqMonitor(){
@@ -101,7 +102,6 @@ void OfflineStorage::m_writeHeattreatmentData(){
 		SEQMONITOR_K1 = SEQMONITOR;
 		updateSetData	= 0;
 		W25qxx_EraseSector(0);
-		//W25qxx_WriteSector(m_writeFlashBuf,1,0,19);
 		W25qxx_WriteSector(m_writeFlashBuf,0,0,19);
 
 	}
@@ -126,16 +126,29 @@ void OfflineStorage::m_quenchCount(){
 		Write_memory_Once=0;
 		m_writeFlashBuf[0] = (uint8_t)(Quenching_Seconds_Cont & 0xff);
 		m_writeFlashBuf[1] = (uint8_t)(Quenching_Seconds_Cont>>8) & 0xff;
+		m_writeFlashBuf[2] = NewQuenchingReq;
 		W25qxx_EraseSector(3);
-		W25qxx_WriteSector(m_writeFlashBuf,3,0,2);
+		W25qxx_WriteSector(m_writeFlashBuf,3,0,3);
+}
+
+void OfflineStorage::m_writeWifidata(){
+	if(UpdateMemoryForWfi==1){
+		UpdateMemoryForWfi=0;
+		for(uint8_t i=0;i<15;i++){
+			m_readFlashwifiBuf[i]= wifiUsername[i];
+		}
+		for(uint8_t i=15,j=0;j<30;i++,j++){
+			m_readFlashwifiBuf[i]= wifiPassword[j];
+		}
+		m_readFlashwifiBuf[30] = noOfByteUsername;
+		m_readFlashwifiBuf[31] = noOfBytePsw;
+		W25qxx_WriteSector(m_readFlashwifiBuf,1,0,32);
+	}
 }
 
 //Read method
 
 void OfflineStorage::m_readSeqMonitor(){
-	W25qxx_ReadSector(m_readFlashBuf,0,0,1);
-	SEQMONITOR = m_readFlashBuf[0];
-	SEQMONITOR_K1 = SEQMONITOR;
 }
 
 void OfflineStorage::m_readHeattreatmentData(){
@@ -178,14 +191,38 @@ void OfflineStorage::m_readCountinc(){
 	seq2_count_inc_K1 = seq2_count_inc;
 }
 void OfflineStorage::m_readquenchcount(){
-	W25qxx_ReadSector(m_readFlashBuf,3,0,2);
+	W25qxx_ReadSector(m_readFlashBuf,3,0,3);
 	Quenching_Seconds_Cont =(m_readFlashBuf[1]<<8 | m_readFlashBuf[0]);
+	NewQuenchingReq = m_readFlashBuf[2];
+}
+
+void OfflineStorage::m_readWifiData(){
+	W25qxx_ReadSector(m_readFlashwifiBuf,1,0,32);
+	for(uint8_t i=0;i<15;i++){
+		wifiUsername[i] = m_readFlashwifiBuf[i];
+	}
+	for(uint8_t i=15;i<30;i++){
+		wifiPassword[i] = m_readFlashwifiBuf[i];
+	}
+	noOfByteUsername = m_readFlashwifiBuf[30];
+	noOfBytePsw = m_readFlashwifiBuf[31];
+
+	noOfByteUsernameK1 = noOfByteUsername;
+	for(uint8_t i=0;i<noOfByteUsername;i++){
+		wifiUsernameK1[i] = wifiUsername[i];
+	}
+	noOfBytePswK1 = noOfBytePsw;
+	for(uint8_t i=0;i<noOfBytePsw;i++){
+		wifiPasswordK1[i] = wifiPassword[i];
+	}
 }
 
 void OfflineStorage::ReadOfflinedataInit()
 {
 	m_readHeattreatmentData();
 	m_readCountinc();
+	m_readWifiData();
+	m_quenchCount();
 }
 
 void OfflineStorage::ECUProductionInit(void)

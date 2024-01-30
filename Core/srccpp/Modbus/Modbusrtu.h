@@ -21,6 +21,7 @@ public:
 	void ModbusReadTransaction(void);
 	uint16_t ASCChecksum(uint8_t *ASCSrc, uint8_t NoOfBytes);
 	void dwinFrame(void);
+	void dwinDecoder(void);
 
 	uint8_t Cntid,Cntid_dwin;
 	uint8_t _u8MBSlave;

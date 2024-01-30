@@ -28,6 +28,9 @@ private:
 	uint8_t CMDAtEch0[7]="ATE0\r\n";
 	uint8_t CMDATok[6] = "AT\r\n";
 	uint8_t CMDATCWMODE[15]="AT+CWMODE=3\r\n";
+	uint8_t CMDATCWJAPUsernamePswB1[10] = {'A','T','+','C','W','J','A','P','=','"'};
+	uint8_t CMDATCWJAPUsernamePswB2[3] = {'"',',','"'};
+	uint8_t CMDATCWJAPUsernamePswB3[3] = {'"','\r','\n'};
 	uint8_t CMDATCWJAPUsernamePsw[45] = {'A','T','+','C','W','J','A','P','=','"','A','C','C',
 										'E','E','D','O','_','E','D','I','M','A','X','"',',','"',
 										'A','C','C','E','E','D','O','@','1','2','3','"','\r','\n'};
