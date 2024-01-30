@@ -9,6 +9,7 @@ extern uint8_t checkbuff[300];
 extern uint8_t refinc;
 extern uint8_t RefreshBlockInfo;//update at rx end
 extern uint8_t skipIdTCP,statusTCP;
+extern uint8_t wifiUsername[15];
 uint8_t alarmOnOff;
 uint8_t SW_Hour,SW_Minute;
 uint8_t SW_Date,SW_Month,SW_Year;
@@ -197,6 +198,8 @@ void ESPRxDecoder(unsigned char Rxwifi_data,unsigned char Rxseqdecoder)
 			 else{;}
 		break;
 		case 2:
+			checkbuff[refinc]= Rxwifi_data;
+			refinc++;
 			if((Rxwifi_data=='O')&&(bufferptr==0))
 			 {
 			 	bufferptr=1;
@@ -209,54 +212,62 @@ void ESPRxDecoder(unsigned char Rxwifi_data,unsigned char Rxseqdecoder)
 			 }
 		break;
 		case 3:
-			if((Rxwifi_data=='A')&&(bufferptr==0))
+
+
+			if((Rxwifi_data== wifiUsername[0])&&(bufferptr==0))
 			 {
 			 	bufferptr=1;
 			 }
-			 else if((Rxwifi_data=='C')&&(bufferptr==1))
+			 else if((Rxwifi_data== wifiUsername[1])&&(bufferptr==1))
 			 {
 			 	bufferptr=2;
 			 }
-			 else if((Rxwifi_data=='C')&&(bufferptr==2))
+			 else if((Rxwifi_data== wifiUsername[2])&&(bufferptr==2))
 			 {
 			 	bufferptr=3;
 			 }
 
-			 else if((Rxwifi_data=='E')&&(bufferptr==3))
+			 else if((Rxwifi_data== wifiUsername[3])&&(bufferptr==3))
 			 {
 			 	bufferptr=4;
 			 }
-			 else if((Rxwifi_data=='E')&&(bufferptr==4))
+			 else if((Rxwifi_data== wifiUsername[4])&&(bufferptr==4))
 			 {
 			 	bufferptr=5;
 			 }
-			 else if((Rxwifi_data=='D')&&(bufferptr==5))
+			 else if((Rxwifi_data== wifiUsername[5])&&(bufferptr==5))
 			 {
 			 	bufferptr=6;
 			 }
-			 else if((Rxwifi_data=='O')&&(bufferptr==6))
+			 else if((Rxwifi_data== wifiUsername[6])&&(bufferptr==6))
 			 {
 			 	bufferptr=7;
 			 }
-			 else if((Rxwifi_data=='_')&&(bufferptr==7))
+			 else if((Rxwifi_data== wifiUsername[7])&&(bufferptr==7))
 			 {
 			 	bufferptr=8;
 			 }
-			 else if((Rxwifi_data=='E')&&(bufferptr==8))
+			 else if((Rxwifi_data== wifiUsername[8])&&(bufferptr==8))
 			 {
 			 	bufferptr=9;
 			 }
-			 else if((Rxwifi_data=='D')&&(bufferptr==9))
+			 else if((Rxwifi_data== wifiUsername[9])&&(bufferptr==9))
 			 {
 			 	bufferptr=10;
 			 }
-			 else if((Rxwifi_data=='I')&&(bufferptr==10))
+			 else if((Rxwifi_data== wifiUsername[10])&&(bufferptr==10))
 			 {
 			 	bufferptr=11;
 			 }
-			 else if((Rxwifi_data=='M')&&(bufferptr==11))
+			 else if((Rxwifi_data== wifiUsername[11])&&(bufferptr==11))
 			 {
-			 	bufferptr=12;
+			 	//bufferptr=12;
+			 	bufferptr=0;
+				Err_bufferptr=0;
+				Rxseqdecoder=0;
+				wifi_command=70;
+				Error_Retry=0;
+				WifiDisplay = 1;
 			 }
 			 else if((Rxwifi_data=='A')&&(bufferptr==12))
 			 {

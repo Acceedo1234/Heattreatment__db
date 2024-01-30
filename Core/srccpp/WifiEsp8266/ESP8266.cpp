@@ -163,7 +163,6 @@ void ESP8266::Send_WifiCmd()
 		CMDATCWJAPUsernamePsw[i]= CMDATCWJAPUsernamePswB3[j];
 	}
 	NoOfdata_byte = 10+noOfByteUsername+3+noOfBytePsw+3;
-	//CMDATCWJAPUsernamePsw
 	HAL_UART_Transmit_IT(&hlpuart1,CMDATCWJAPUsernamePsw,NoOfdata_byte);
 	break;		   //add retry
 	case 41:	   //resend if o replay
