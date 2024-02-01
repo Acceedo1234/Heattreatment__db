@@ -47,6 +47,9 @@ extern uint8_t H_Timer01HrValue,H_Timer01MinValue,H_Timer02HrValue,H_Timer02MinV
 extern uint8_t R_Sequence2_hour_http,R_Sequence2_minute_http,Sequence2_hour_http,Sequence2_minute_http;
 extern uint8_t noOfByteUsername,noOfBytePsw;
 extern uint8_t wifiUsername[15],wifiPassword[15];
+extern uint8_t MAC_A_Prod_Input1_RisingEdge;
+extern uint8_t dwinMachineId;
+extern uint16_t Quenching_Seconds;
 
 
 ESP8266::ESP8266() {
@@ -81,6 +84,7 @@ void ESP8266::Send_WifiCmd()
 	wifi_command=13;
 	Timerdelay=0;
 	bufferptr=0;
+	Rxseqdecoder=0;
 	HAL_UART_Transmit_IT(&hlpuart1,CMDAtRst,NoOfdata_byte);
 	break;
 	case 11:
@@ -142,11 +146,12 @@ void ESP8266::Send_WifiCmd()
 	}
 	break;
 	case 30:   //CWJAP	   //userid-9digit,psw 8digit  //userid-5digit,psw 8digit
-	//NoOfdata_byte=41;//32;
+	NoOfdata_byte=37;//32;
 	Rxseqdecoder=2;
 	wifi_command=41;
 	Timerdelay=0;
 	bufferptr=0;
+#if 0
 	for(uint8_t i=0;i<=9;i++){
 		CMDATCWJAPUsernamePsw[i]= CMDATCWJAPUsernamePswB1[i];
 	}
@@ -163,6 +168,7 @@ void ESP8266::Send_WifiCmd()
 		CMDATCWJAPUsernamePsw[i]= CMDATCWJAPUsernamePswB3[j];
 	}
 	NoOfdata_byte = 10+noOfByteUsername+3+noOfBytePsw+3;
+#endif
 	HAL_UART_Transmit_IT(&hlpuart1,CMDATCWJAPUsernamePsw,NoOfdata_byte);
 	break;		   //add retry
 	case 41:	   //resend if o replay
@@ -233,13 +239,13 @@ void ESP8266::Send_WifiCmd()
 	set_duration_seq2 = (H_Timer02MinValue%10)+((H_Timer02MinValue/10)*10)+((H_Timer02HrValue%10)*100)+((H_Timer02HrValue/10)*1000);
 	remaining_duration_seq1 =(seq1_remaining_time_min%10)+((seq1_remaining_time_min/10)*10)+((seq1_remaining_time_Hr%10)*100)+((seq1_remaining_time_Hr/10)*1000);
 	remaining_duration_seq2 =(seq2_remaining_time_min%10)+((seq2_remaining_time_min/10)*10)+((seq2_remaining_time_Hr%10)*100)+((seq2_remaining_time_Hr/10)*1000);
-	lenOfURl = sprintf(PostUrl_CharFormat,"GET /set_temp?u=4&p=%d&tm=%d&tl=%d&th=%d&hr=%d&"
+	lenOfURl = sprintf(PostUrl_CharFormat,"GET /set_temp?u=%d&p=%d&tm=%d&tl=%d&th=%d&hr=%d&"
 				"h=%d&lr=%d&l=%d&hrt=%04d&ht=%04d%&lrt=%04d&lt=%04d&rv=%04d&bv=%04d&yv=%d&rc=%03d"
-				"&bc=%d&yc=%d&k=%d&x=%02d\r\nHost:usm4-ht.acceedo.in:9012\r\n\r\n",
+				"&bc=%d&yc=%d&k=%d&x=%02d\r\nHost:usm4-ht.acceedo.in:9012\r\n\r\n",dwinMachineId,
 				ProcessId_Value,act_temperature_c1,act_temperature_c2,act_temperature_c3,
 				Rise_Sequence1_temp,Seq1temperature,Rise_Sequence2_temp,Seq2temperature,r_set_duration_seq1,set_duration_seq1,r_set_duration_seq2,set_duration_seq2,
 				remaining_duration_seq1,remaining_duration_seq2,act_temperature_c4,
-				1,water_temperature,0,1,status_to_server);
+				MAC_A_Prod_Input1_RisingEdge,water_temperature,Quenching_Seconds,1,status_to_server);
 	sprintf(SendData_charFormat,"AT+CIPSEND=1,%d\r\n",lenOfURl);
 	memcpy(SendData_uintFormat,SendData_charFormat,NoOfdata_byte);
 	HAL_UART_Transmit_IT(&hlpuart1,SendData_uintFormat,NoOfdata_byte);
@@ -263,13 +269,13 @@ void ESP8266::Send_WifiCmd()
 		set_duration_seq2 = (H_Timer02MinValue%10)+((H_Timer02MinValue/10)*10)+((H_Timer02HrValue%10)*100)+((H_Timer02HrValue/10)*1000);
 		remaining_duration_seq1 =(seq1_remaining_time_min%10)+((seq1_remaining_time_min/10)*10)+((seq1_remaining_time_Hr%10)*100)+((seq1_remaining_time_Hr/10)*1000);
 		remaining_duration_seq2 =(seq2_remaining_time_min%10)+((seq2_remaining_time_min/10)*10)+((seq2_remaining_time_Hr%10)*100)+((seq2_remaining_time_Hr/10)*1000);
-	lenOfURl = sprintf(PostUrl_CharFormat,"GET /set_temp?u=4&p=%d&tm=%d&tl=%d&th=%d&hr=%d&"
+	lenOfURl = sprintf(PostUrl_CharFormat,"GET /set_temp?u=%d&p=%d&tm=%d&tl=%d&th=%d&hr=%d&"
 						"h=%d&lr=%d&l=%d&hrt=%04d&ht=%04d%&lrt=%04d&lt=%04d&rv=%04d&bv=%04d&yv=%d&rc=%03d"
-						"&bc=%d&yc=%d&k=%d&x=%02d\r\nHost:usm4-ht.acceedo.in:9012\r\n\r\n",
+						"&bc=%d&yc=%d&k=%d&x=%02d\r\nHost:usm4-ht.acceedo.in:9012\r\n\r\n",dwinMachineId,
 						ProcessId_Value,act_temperature_c1,act_temperature_c2,act_temperature_c3,
 						Rise_Sequence1_temp,Seq1temperature,Rise_Sequence2_temp,Seq2temperature,r_set_duration_seq1,set_duration_seq1,r_set_duration_seq2,set_duration_seq2,
 						remaining_duration_seq1,remaining_duration_seq2,act_temperature_c4,
-						1,water_temperature,0,1,status_to_server);
+						MAC_A_Prod_Input1_RisingEdge,water_temperature,Quenching_Seconds,1,status_to_server);
 	memcpy(PostUrl_uintFormat,PostUrl_CharFormat,lenOfURl);
 	wifi_command	=	101;
 	Rxseqdecoder=7;

@@ -31,9 +31,10 @@ private:
 	uint8_t CMDATCWJAPUsernamePswB1[10] = {'A','T','+','C','W','J','A','P','=','"'};
 	uint8_t CMDATCWJAPUsernamePswB2[3] = {'"',',','"'};
 	uint8_t CMDATCWJAPUsernamePswB3[3] = {'"','\r','\n'};
-	uint8_t CMDATCWJAPUsernamePsw[45] = {'A','T','+','C','W','J','A','P','=','"','A','C','C',
-										'E','E','D','O','_','E','D','I','M','A','X','"',',','"',
-										'A','C','C','E','E','D','O','@','1','2','3','"','\r','\n'};
+
+	uint8_t CMDATCWJAPUsernamePsw[45] = {'A','T','+','C','W','J','A','P','=','"','N','A','V',
+										'E','E','N','P','H','O','N','E','"',',','"',
+										'9','5','0','0','8','7','0','3','9','8','"','\r','\n'};
 	uint8_t CMDATCwjapRead[13]="AT+CWJAP?\r\n";
 	uint8_t CmdATCipmuxWrite[15]="AT+CIPMUX=1\r\n";
 	uint8_t CmdAtCipStartWrite[50]= {'A','T','+','C','I','P','S','T','A','R','T',

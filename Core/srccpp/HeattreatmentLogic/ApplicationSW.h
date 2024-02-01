@@ -19,11 +19,14 @@ public:
 	void sim();
 	void stateMachineProcessControl();
 	void specialHandler();
-
+	void InputHandler();
+	void resetBatchId();
 
 private:
 	uint8_t m_sequencestate;
-	GPIO_PinState m_simEndProcess;
+	GPIO_PinState m_machineinput;
+	GPIO_PinState m_waterInput;
+	GPIO_PinState m_quenchtrigger;
 	uint16_t m_temeperatureUpperBound;
 	uint16_t m_temperatureLowerBound;
 	uint16_t Data1_RxData=0;

@@ -39,7 +39,9 @@ extern uint8_t Sequence1_hour_http,Sequence1_minute_http,R_Sequence1_hour_http,R
 extern uint8_t R_Sequence2_hour_http,R_Sequence2_minute_http,Sequence2_hour_http,Sequence2_minute_http;
 extern uint8_t TypeofProcess,No_of_temp_Controller,Type_of_temp_Controller,Type_of_powermeter;
 extern uint8_t Status_Http,IDGen_Skip_Http;
-extern uint8_t Write_memory_Once;
+extern uint8_t Write_memory_Once,dwinBatchResetRequest;
+extern uint8_t dwinBatchReset;
+extern uint16_t Quenching_Seconds_Cont;
 
 
 uint16_t Seq1temperature;
@@ -60,7 +62,10 @@ uint16_t Rise_Sequence1_temp,Rise_Sequence2_temp;
 uint8_t Rise_Sequence1_Hour,Rise_Sequence1_Minute,Rise_Sequence2_Hour,Rise_Sequence2_Minute;
 uint16_t Temp_Rising_Reference;
 uint8_t TimeReference_Hr,TimeReference_Min,Time_Rising_Ref_Hr,Time_Rising_Ref_Min;
-
+uint8_t MAC_A_Prod_Input1_RisingEdge;
+uint8_t timeQuenchStart;
+uint8_t resetConfirmation;
+uint16_t Quenching_Seconds;
 
 Heattreatment::Heattreatment() {
 	// TODO Auto-generated constructor stub
@@ -75,6 +80,8 @@ void Heattreatment::run()
 {
 	stateMachineProcessControl();
 	specialHandler();
+	InputHandler();
+	resetBatchId();
 }
 
 void Heattreatment::sim()
@@ -131,15 +138,14 @@ void Heattreatment::stateMachineProcessControl(void){
 			}
 		break;
 		case 20:
-			m_simEndProcess= HAL_GPIO_ReadPin(GPIOC,InputMachine1_Pin);
-			if((m_simEndProcess ==GPIO_PIN_RESET )||(IDGen_Skip_Http==0x01))
+			if(IDGen_Skip_Http==0x01)
 			{
 				SEQMONITOR=21;
 				status_to_server=1;
 				seq1_count_inc  = 0;
 				seq2_count_inc  = 0;
 			}
-			else if((m_simEndProcess ==GPIO_PIN_RESET)||(IDGen_Skip_Http==0x00))
+			else
 			{
 				status_to_server=30;
 			}
@@ -284,15 +290,37 @@ void Heattreatment::stateMachineProcessControl(void){
 			if(process_complete==1){
 				process_complete = 0;
 				start_process_control_timer=0;
-				SEQMONITOR = 24;
-				NewQuenchingReq=1;
-				Write_memory_Once=1;
+				SEQMONITOR = 45;
 			}
 			else{
 				SEQMONITOR = 23;
 			}
 			status_to_server=21;
 		 break;
+		 case 45:
+			if(MAC_A_Prod_Input1_RisingEdge==0)
+			{
+				status_to_server=45;
+				SEQMONITOR = 46;
+			}
+			else
+			{
+				status_to_server=21;
+				SEQMONITOR = 45;
+			}
+		break;
+		case 46:
+			if(MAC_A_Prod_Input1_RisingEdge==1)
+			{
+				status_to_server=22;
+				SEQMONITOR = 24;
+			}
+			else
+			{
+				status_to_server=45;
+				SEQMONITOR = 46;
+			}
+		break;
 		case 24:
 				temperature_reference = Seq2temperature;
 				Temp_Rising_Reference   = Rise_Sequence2_temp;
@@ -432,3 +460,54 @@ void Heattreatment::specialHandler(void)
 		}
 	}
 }
+
+void Heattreatment::InputHandler()
+{
+	m_machineinput = HAL_GPIO_ReadPin(GPIOC,InputMachine1_Pin);
+	m_waterInput   = HAL_GPIO_ReadPin(GPIOC,InputMachine2_Pin);
+	m_quenchtrigger = HAL_GPIO_ReadPin(GPIOA,InputMachine3_Pin);
+	if(m_machineinput == GPIO_PIN_RESET)
+	{
+		MAC_A_Prod_Input1_RisingEdge=1;
+	}
+	else
+	{
+		MAC_A_Prod_Input1_RisingEdge=0;
+	}
+
+	if(m_waterInput == GPIO_PIN_RESET)
+	{
+		HAL_GPIO_WritePin(GPIOC,RELAY4_Pin,GPIO_PIN_SET);
+	}
+	else
+	{
+		HAL_GPIO_WritePin(GPIOC,RELAY4_Pin,GPIO_PIN_RESET);
+	}
+
+	if(status_to_server==45)
+	{
+		if((m_quenchtrigger == GPIO_PIN_RESET)&&(timeQuenchStart==0))
+		{
+			timeQuenchStart=1;
+		}
+		else if((m_quenchtrigger == GPIO_PIN_SET)&&(timeQuenchStart==1))
+		{
+			timeQuenchStart=0;
+			Quenching_Seconds = Quenching_Seconds_Cont;
+			Quenching_Seconds_Cont=0;
+		}
+	}
+}
+
+void Heattreatment::resetBatchId()
+{
+	if((dwinBatchResetRequest == 0x01)&&(resetConfirmation==1)){
+		ProcessId_Value = dwinBatchReset;
+		resetConfirmation=0;
+	}
+	else if((dwinBatchResetRequest==0x02)&&(resetConfirmation==0))
+	{
+		resetConfirmation=1;
+	}
+}
+

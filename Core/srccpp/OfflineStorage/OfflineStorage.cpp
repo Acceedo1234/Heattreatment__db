@@ -40,6 +40,7 @@ extern uint16_t ProcessTotalMin1,ProcessTotalMin2;
 extern uint8_t UpdateMemoryForWfi;
 /*check for change in data*/
 uint8_t SEQMONITOR_K1;
+uint8_t Quenching_Seconds_K1;
 uint16_t ProcessId_Value_K1;
 uint16_t seq1_count_inc_K1,seq2_count_inc_K1;
 extern uint8_t noOfByteUsername,noOfBytePsw;
@@ -47,6 +48,10 @@ extern uint8_t wifiUsername[15],wifiPassword[15];
 extern uint8_t noOfByteUsernameK1,noOfBytePswK1;
 extern uint8_t wifiUsernameK1[15],wifiPasswordK1[15];
 extern uint8_t NewQuenchingReq;
+extern uint8_t dwinMachineId,dwinBatchReset;
+extern uint8_t dwinMachineId_k1,dwinBatchReset_k1;
+extern uint8_t UpdateMachineframe;
+extern uint8_t Quenching_Seconds;
 
 OfflineStorage::OfflineStorage() {
 	// TODO Auto-generated constructor stub
@@ -61,7 +66,6 @@ void OfflineStorage::run()
 {
 	m_writeHeattreatmentData();
 	m_writeCountinc();
-	m_writeWifidata();
 	m_quenchCount();
 }
 
@@ -76,7 +80,7 @@ void OfflineStorage::m_writeSeqMonitor(){
 
 void OfflineStorage::m_writeHeattreatmentData(){
 	if((ProcessId_Value != ProcessId_Value_K1)||(updateSetData==1)||
-			(SEQMONITOR != SEQMONITOR_K1))
+			(SEQMONITOR != SEQMONITOR_K1)||(UpdateMachineframe==1))
 	{
 		m_writeFlashBuf[0] = (uint8_t)(ProcessId_Value & 0xff);
 		m_writeFlashBuf[1] = (uint8_t)(ProcessId_Value>>8) & 0xff;
@@ -99,10 +103,16 @@ void OfflineStorage::m_writeHeattreatmentData(){
 		m_writeFlashBuf[16] = (uint8_t)(Rise_Sequence2_Hour);
 		m_writeFlashBuf[17] = (uint8_t)(Rise_Sequence2_Minute);
 		m_writeFlashBuf[18] = SEQMONITOR;
+		m_writeFlashBuf[19] = dwinMachineId;
+		m_writeFlashBuf[20] = dwinBatchReset;
+
 		SEQMONITOR_K1 = SEQMONITOR;
+		dwinMachineId_k1  = dwinMachineId;
+		dwinBatchReset_k1 = dwinBatchReset;
 		updateSetData	= 0;
+		UpdateMachineframe=0;
 		W25qxx_EraseSector(0);
-		W25qxx_WriteSector(m_writeFlashBuf,0,0,19);
+		W25qxx_WriteSector(m_writeFlashBuf,0,0,21);
 
 	}
 }
@@ -122,13 +132,12 @@ void OfflineStorage::m_writeCountinc(){
 }
 
 void OfflineStorage::m_quenchCount(){
-	if(Write_memory_Once==0){return;}
-		Write_memory_Once=0;
-		m_writeFlashBuf[0] = (uint8_t)(Quenching_Seconds_Cont & 0xff);
-		m_writeFlashBuf[1] = (uint8_t)(Quenching_Seconds_Cont>>8) & 0xff;
-		m_writeFlashBuf[2] = NewQuenchingReq;
+	if(Quenching_Seconds == Quenching_Seconds_K1){return;}
+		Quenching_Seconds_K1=Quenching_Seconds;
+		m_writeFlashBuf[0] = (uint8_t)(Quenching_Seconds & 0xff);
+		m_writeFlashBuf[1] = (uint8_t)(Quenching_Seconds>>8) & 0xff;
 		W25qxx_EraseSector(3);
-		W25qxx_WriteSector(m_writeFlashBuf,3,0,3);
+		W25qxx_WriteSector(m_writeFlashBuf,3,0,2);
 }
 
 void OfflineStorage::m_writeWifidata(){
@@ -158,12 +167,12 @@ void OfflineStorage::m_readHeattreatmentData(){
 		m_readFlashheatBuf[i]=0;
 	}
 	//W25qxx_ReadSector(m_readFlashheatBuf,1,0,19);
-	W25qxx_ReadSector(m_readFlashheatBuf,0,0,19);
+	W25qxx_ReadSector(m_readFlashheatBuf,0,0,21);
 	ProcessId_Value = (m_readFlashheatBuf[1]<<8 | m_readFlashheatBuf[0]);
 	ProcessId_Value_K1 = ProcessId_Value;
-	Seq1temperature = (m_readFlashheatBuf[3]<<8 | m_readFlashheatBuf[2]);
+	Seq1temperature =(m_readFlashheatBuf[3]<<8 | m_readFlashheatBuf[2]);
 	Seq2temperature = (m_readFlashheatBuf[5]<<8 | m_readFlashheatBuf[4]);
-	H_Timer01HrValue = m_readFlashheatBuf[6];
+	H_Timer01HrValue =m_readFlashheatBuf[6];
 	H_Timer01MinValue = m_readFlashheatBuf[7];
 	H_Timer02HrValue = m_readFlashheatBuf[8];
 	H_Timer02MinValue =m_readFlashheatBuf[9];
@@ -172,15 +181,17 @@ void OfflineStorage::m_readHeattreatmentData(){
 	Rise_Sequence2_temp = (m_readFlashheatBuf[13]<<8 | m_readFlashheatBuf[12]);
 	Rise_Sequence1_Hour = m_readFlashheatBuf[14];
 	Rise_Sequence1_Minute = m_readFlashheatBuf[15];
-	Rise_Sequence2_Hour = m_readFlashheatBuf[16];
+	Rise_Sequence2_Hour   = m_readFlashheatBuf[16];
 	Rise_Sequence2_Minute =m_readFlashheatBuf[17];
-
 	SEQMONITOR = m_readFlashheatBuf[18];
-	SEQMONITOR_K1 = SEQMONITOR;
+	dwinMachineId = m_readFlashheatBuf[19];
+	dwinBatchReset = m_readFlashheatBuf[20];
 
+	SEQMONITOR_K1 		= SEQMONITOR;
+	dwinMachineId_k1  	= dwinMachineId;
+	dwinBatchReset_k1 	= dwinBatchReset;
 	ProcessTotalMin1 	=  (H_Timer01HrValue*60)+  H_Timer01MinValue;
 	ProcessTotalMin2 	=  (H_Timer02HrValue*60)+  H_Timer02MinValue;
-	updateSetData=1;
 }
 
 void OfflineStorage::m_readCountinc(){
@@ -191,9 +202,9 @@ void OfflineStorage::m_readCountinc(){
 	seq2_count_inc_K1 = seq2_count_inc;
 }
 void OfflineStorage::m_readquenchcount(){
-	W25qxx_ReadSector(m_readFlashBuf,3,0,3);
-	Quenching_Seconds_Cont =(m_readFlashBuf[1]<<8 | m_readFlashBuf[0]);
-	NewQuenchingReq = m_readFlashBuf[2];
+	W25qxx_ReadSector(m_readFlashBuf,3,0,2);
+	Quenching_Seconds =(m_readFlashBuf[1]<<8 | m_readFlashBuf[0]);
+	Quenching_Seconds_K1 = Quenching_Seconds;
 }
 
 void OfflineStorage::m_readWifiData(){
@@ -221,7 +232,6 @@ void OfflineStorage::ReadOfflinedataInit()
 {
 	m_readHeattreatmentData();
 	m_readCountinc();
-	m_readWifiData();
 	m_quenchCount();
 }
 

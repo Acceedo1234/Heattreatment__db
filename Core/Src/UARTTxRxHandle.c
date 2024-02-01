@@ -52,19 +52,24 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 		{
 			rx_seq=2;
 		}
-		else if((rx_seq==2)&&(u8rxbuf[0]==0x01))
+		else if((rx_seq==2)&&((u8rxbuf[0]==0x02)||u8rxbuf[0]==0x01))
 		{
 			rx_seq=3;
 		}
 		else if(rx_seq==3)
 		{
-			rx_msb_h_data =u8rxbuf[0];
+			rx_msb_data =u8rxbuf[0];
 			rx_seq=4;
 		}
 		else if(rx_seq==4)
 		{
-			rx_seq=5;
-			rx_msb_data = u8rxbuf[0];
+			rx_seq=0;
+			rx_lsb_data = u8rxbuf[0];
+			if(rx_meter_id==1){act_temperature_c1 = (rx_msb_data<<8 | rx_lsb_data); }
+			else if(rx_meter_id==2){act_temperature_c2 = (rx_msb_data<<8 | rx_lsb_data); }
+			else if(rx_meter_id==3){act_temperature_c3 = (rx_msb_data<<8 | rx_lsb_data); }
+			else if(rx_meter_id==4){act_temperature_c4 = (rx_msb_data<<8 | rx_lsb_data); }
+			else{}
 		}
 		else if(rx_seq==5)
 		{
@@ -155,7 +160,7 @@ void DwinFrameDecode(uint8_t Dwindatarx){
 			}
 		break;
 		case 5:
-			if(Dwindatarx == 0x0D){
+			if(Dwindatarx == 0x09){
 				Dwinseq=6;
 				Rx_Dwin_Data_Buff_Point=0;
 			}

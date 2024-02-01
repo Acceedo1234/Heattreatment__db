@@ -26,7 +26,7 @@ private:
 	void m_readquenchcount();
 	void m_writeWifidata();
 	void m_readWifiData();
-	uint8_t m_writeFlashBuf[20];
+	uint8_t m_writeFlashBuf[30];
 	uint8_t m_readFlashBuf[20];
 	uint8_t m_readFlashheatBuf[20];
 	uint8_t m_readFlashwifiBuf[32];

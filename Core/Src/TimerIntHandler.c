@@ -22,6 +22,7 @@
  extern uint8_t process_complete;
  extern uint8_t NewQuenchingReq;
  extern uint8_t status_to_server;
+ extern uint8_t timeQuenchStart;
  
  uint16_t seq1_count_inc,seq2_count_inc;
  uint16_t seq1_remaining_time_total_min,seq2_remaining_time_total_min;
@@ -48,7 +49,7 @@
 			if(++SimCount >= 20)
 			{
 				SimCount=0;
-				HAL_GPIO_TogglePin(GPIOC, RELAY4_Pin);
+
 			}
 			Flag1Second =1;
 			//DHCP_time_handler( );
@@ -85,41 +86,9 @@
 		if(++CountAT_Quench > 9)
 		{
 			CountAT_Quench=0;
-			InputStart_R =  HAL_GPIO_ReadPin(GPIOC,InputMachine2_Pin);
-			InputStop_R  =  HAL_GPIO_ReadPin(GPIOA,InputMachine3_Pin);
-			if(InputStart_R==GPIO_PIN_RESET){Read_Quench_IP_Start=0;}
-			else{Read_Quench_IP_Start=1;}
-			if(InputStop_R==GPIO_PIN_RESET){Read_Quench_IP_Stop=0;}
-			else{Read_Quench_IP_Stop=1;}
-			if((NewQuenchingReq)
-				&&(!Read_Quench_IP_Start)
-				&&(status_to_server != 30)
-				&&(Status_Quench_Duration==0))
+			if(timeQuenchStart==1)
 			{
-				NewQuenchingReq=0;
-				Write_memory_Once=1;
-				Status_Quench_Duration  = 1;
-				Quenching_Seconds_Cont = 0;
-			}
-			else if((Status_Quench_Duration==1)&&(Read_Quench_IP_Stop))
-			{
-				Quenching_Seconds_Cont	 += 1;
-			}
-			else if((Status_Quench_Duration==1)&&(!Read_Quench_IP_Stop))
-			{
-				Quenching_Seconds_Cont	 += 1;
-				Status_Quench_Duration=2;
-			}
-			else if((Status_Quench_Duration==2)&&(!Read_Quench_IP_Stop))
-			{
-				Quenching_Seconds_Cont	 += 1;
-				Status_Quench_Duration=2;
-			}
-			else if((Status_Quench_Duration==2)&&(Read_Quench_IP_Stop))
-			{
-				Quenching_Seconds_Cont	 += 1;
-				Status_Quench_Duration=0;
-				Write_memory_Once=1;
+				Quenching_Seconds_Cont=Quenching_Seconds_Cont+1;
 			}
 		}
 	}

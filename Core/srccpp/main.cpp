@@ -56,13 +56,13 @@ void cppMain()
 			Flag100milliSeconds=0;
 			offlineStorageInst.run();
 			ModbusInst.ModbusReadTransaction();
-			ModbusInst.dwinDecoder();
+			ModbusInst.dwinDecoderMachineFrame();
 		}
 		if(Flag1Second)
 		{
 			Flag1Second=0;
 			esp8266Inst.run();
-			heattreatmentInst.sim();
+		//	heattreatmentInst.sim();
 			ModbusInst.dwinFrame();
 		}
 	}

@@ -22,6 +22,7 @@ public:
 	uint16_t ASCChecksum(uint8_t *ASCSrc, uint8_t NoOfBytes);
 	void dwinFrame(void);
 	void dwinDecoder(void);
+	void dwinDecoderMachineFrame(void);
 
 	uint8_t Cntid,Cntid_dwin;
 	uint8_t _u8MBSlave;
@@ -33,7 +34,7 @@ public:
 	uint16_t m_settemperature;
 	uint16_t m_setTime;
 	uint8_t u8ModbusRegister[8];
-	uint8_t u8ModbusRegisterdwin[48];
+	uint8_t u8ModbusRegisterdwin[120];
 	uint8_t noOfDataDwin;
 private:
 	uint8_t mTemperatureSensorId=1;
